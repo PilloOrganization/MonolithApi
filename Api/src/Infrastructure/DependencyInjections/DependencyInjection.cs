@@ -1,11 +1,12 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Application.UnitOfWorks.Interfaces;
+using Domain.Repositories.Interfaces;
+using Domain.Services.Interfaces;
+using Infrastructure.EntityFramework.Repositories;
+using Infrastructure.EntityFramework.UnitOfWorks;
+using Infrastructure.Services;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Infrastructure.DependencyInjections
 {
@@ -14,9 +15,20 @@ namespace Infrastructure.DependencyInjections
         public static void AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
         {
             var connectionString = configuration.GetConnectionString("DefaultConnection");
+            services.AddDbContext<SqlServerAppDbContext>(options => options.UseSqlServer(connectionString));
+            AddRepositoriesAndUnitOfWork(services);
+            services.AddScoped<IPasswordHasher, PasswordHasher>();
+        }
 
-            services.AddDbContext<SqlServerAppDbContext>(options =>
-                options.UseSqlServer(connectionString));
+        private static void AddRepositoriesAndUnitOfWork(IServiceCollection services)
+        {
+            services.AddScoped<IUserRepository, UserRepository>();
+            services.AddScoped<IAccountRepository, AccountRepository>();
+            services.AddScoped<ICourseRepository, CourseRepository>();
+            services.AddScoped<IDoseRepository, DoseRepository>();
+            services.AddScoped<IMedicineRepository, MedicineRepository>();
+            services.AddScoped<IPrescriptionScheduleRepository, PrescriptionScheduleRepository>();
+            services.AddScoped<IUnitOfWork, UnitOfWork>();
         }
     }
 }

@@ -1,11 +1,14 @@
 ﻿using Api.Models.Requests;
+using Application.DataTransferObjects;
 using Application.Mediatr.Commands;
 using AutoMapper;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Api.Controllers
 {
+    [AllowAnonymous]
     [Route("api/[controller]")]
     [ApiController]
     public class UsersController : ControllerBase
@@ -31,8 +34,9 @@ namespace Api.Controllers
         public async Task<ActionResult<object>> Login(LoginUserRequest userLoginRequest)
         {
             var command = _mapper.Map<LoginUserCommand>(userLoginRequest);
-            var result = await _mediator.Send(command);
-            return Ok(result);
+            UserDto userDto = await _mediator.Send(command);
+            var token = new AuthentificationDetails.JwtProvider(HttpContext.RequestServices.GetRequiredService<IConfiguration>()).GenerateToken(userDto.EntityKey, userDto.Username);
+            return Ok(new { Token = token, DefaultAccount = userDto.DefaultAccountDto });
         }
 
         //[HttpPost(nameof(Link))]

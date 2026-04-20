@@ -4,7 +4,8 @@ namespace Domain.Repositories.Interfaces
 {
     public interface ICourseRepository
     {
-        Task CreateAsync(Course course);
-        Task DeleteAsync(Guid key);
+        Task<IEnumerable<Course>> GetCoursesByAccountIdAsync(long accountId);
+        void Create(Course course);
+        void Delete(Course course);
     }
 }

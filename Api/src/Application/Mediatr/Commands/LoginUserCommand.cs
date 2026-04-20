@@ -1,27 +1,57 @@
-﻿using Application.UnitOfWorks.Interfaces;
+﻿using Application.DataTransferObjects;
+using Application.Mediatr.Queries;
+using Application.UnitOfWorks.Interfaces;
+using AutoMapper;
+using Domain.Models;
+using Domain.Services.Interfaces;
 using MediatR;
 
 namespace Application.Mediatr.Commands
 {
-    public class LoginUserCommand : IRequest<object>
+    public class LoginUserCommand : IRequest<UserDto>
     {
         public string UsernameOrPhoneOrEmail { get; set; } = string.Empty;
         public string Password { get; set; } = string.Empty;
 
-        public class Handler : IRequestHandler<LoginUserCommand, object>
+        public class Handler : IRequestHandler<LoginUserCommand, UserDto>
         {
             private readonly IUnitOfWork _unitOfWork;
+            private readonly IPasswordHasher _passwordHasher;
+            private readonly IMapper _mapper;
 
-            public Handler(IUnitOfWork unitOfWork)
+            public Handler(IUnitOfWork unitOfWork, IMapper mapper, IPasswordHasher passwordHasher)
             {
                 _unitOfWork = unitOfWork;
+                _passwordHasher = passwordHasher;
+                _mapper = mapper;
             }
 
-            public async Task<object> Handle(LoginUserCommand request, CancellationToken cancellationToken)
+            public async Task<UserDto> Handle(LoginUserCommand request, CancellationToken cancellationToken)
             {
-                // TODO: Implement actual login logic (validate user, check password, etc.)
-                // Example response:
-                return await Task.FromResult(new { Success = true, User = request.UsernameOrPhoneOrEmail });
+                // TODO: understand in a runtime if the input is a username, phone number, or email and then query the database accordingly
+                User? user = await _unitOfWork.userRepository.GetUserByUsernameAsync(request.UsernameOrPhoneOrEmail)
+                    ?? await _unitOfWork.userRepository.GetUserByPhoneAsync(request.UsernameOrPhoneOrEmail)
+                    ?? await _unitOfWork.userRepository.GetUserByEmailAsync(request.UsernameOrPhoneOrEmail);
+                if (user == null)
+                {
+                    throw new Exception("User not found");
+                }
+                if (!_passwordHasher.Verify(request.Password, user.Password))
+                {
+                    throw new Exception("Invalid password");
+                }
+                var userDto = _mapper.Map<UserDto>(user);
+                Account defaultAccount = (await _unitOfWork.accountRepository.GetAccountsByUserIdAsync(user.Id)).Single(a => a.IsDefault);
+                userDto.DefaultAccountDto = _mapper.Map<AccountDto>(defaultAccount);
+                IEnumerable<Course> courses = await _unitOfWork.courseRepository.GetCoursesByAccountIdAsync(defaultAccount.Id);
+                userDto.DefaultAccountDto.Courses = _mapper.Map<IEnumerable<CourseDto>>(courses);
+                if (courses.Any())
+                {
+                    var firstCourse = courses.First();
+                    IEnumerable<PrescriptionSchedule> prescriptionSchedules = await _unitOfWork.prescriptionScheduleRepository.GetByCourseIdAsync(firstCourse.Id);
+                    userDto.DefaultAccountDto.Courses.First().PrescriptionSchedules = _mapper.Map<IEnumerable<PrescriptionScheduleDto>>(prescriptionSchedules);
+                }
+                return userDto;
             }
         }
     }

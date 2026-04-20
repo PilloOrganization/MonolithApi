@@ -1,43 +1,52 @@
 ﻿using Domain.Models;
 using Domain.Repositories.Interfaces;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
+using System.Linq.Expressions;
 
 namespace Infrastructure.EntityFramework.Repositories
 {
     public class UserRepository : IUserRepository
     {
-        public Task CreateAsync(User user)
+        private readonly SqlServerAppDbContext _context;
+
+        public UserRepository(SqlServerAppDbContext context)
         {
-            throw new NotImplementedException();
+            _context = context ?? throw new ArgumentNullException(nameof(context));
         }
 
-        public Task DeleteUserAsync(Guid key)
+        public Task<User?> GetUserByEmailAsync(string email)
         {
-            throw new NotImplementedException();
+            return GetByProperty(u => u.Email == email);
         }
 
-        public Task DeleteUserAsync(long id)
+        public Task<User?> GetUserByPhoneAsync(string phone)
         {
-            throw new NotImplementedException();
+            return GetByProperty(u => u.PhoneNumber == phone);
         }
 
-        public Task<User> GetUserByEmailAsync(string email)
+        public Task<User?> GetUserByUsernameAsync(string username)
         {
-            throw new NotImplementedException();
+            return GetByProperty(u => u.Username == username);
         }
 
-        public Task<User> GetUserByPhoneAsync(string phone)
+        private Task<User?> GetByProperty(Expression<Func<User, bool>> predicate)
         {
-            throw new NotImplementedException();
+            return _context.Users.Include(u => u.Accounts).FirstOrDefaultAsync(predicate);
         }
 
-        public Task<User> GetUserByUsernameAsync(string username)
+        public void Create(User user)
         {
-            throw new NotImplementedException();
+            _context.Users.Add(user);
         }
+
+        //public Task DeleteUserAsync(Guid key)
+        //{
+        //    throw new NotImplementedException();
+        //}
+
+        //public Task DeleteUserAsync(long id)
+        //{
+        //    throw new NotImplementedException();
+        //}
     }
 }

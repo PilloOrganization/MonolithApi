@@ -9,19 +9,19 @@ namespace Api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class CourseController : ControllerBase
+    public class CoursesController : ControllerBase
     {
         private readonly IMediator _mediator;
         private readonly IMapper _mapper;
 
-        public CourseController(IMediator mediator, IMapper mapper)
+        public CoursesController(IMediator mediator, IMapper mapper)
         {
             _mediator = mediator;
             _mapper = mapper;
         }
 
-        [HttpGet]
-        public async Task<ActionResult<object>> Get()
+        [HttpGet("account/{accountKey}")]
+        public async Task<ActionResult<object>> GetAllForAccount(Guid accountKey)
         {
             var result = await _mediator.Send(new GetCoursesQuery());
             return Ok(result);

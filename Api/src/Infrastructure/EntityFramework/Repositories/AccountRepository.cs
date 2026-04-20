@@ -1,28 +1,36 @@
 ﻿using Domain.Models;
 using Domain.Repositories.Interfaces;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.EntityFramework.Repositories
 {
     public class AccountRepository : IAccountRepository
     {
-        public Task CreateAsync(Account account)
+        private readonly SqlServerAppDbContext _context;
+
+        public AccountRepository(SqlServerAppDbContext context)
         {
-            throw new NotImplementedException();
+            _context = context;
         }
 
-        public Task DeleteAsync(Guid key)
+        public async Task<IEnumerable<Account>> GetAccountsByUserIdAsync(long userId)
         {
-            throw new NotImplementedException();
+            return await _context.Accounts.Where(a => a.UserId == userId).ToListAsync();
         }
 
-        public Task<IEnumerable<Account>> GetAccountsByUserIdAsync(long userId)
+        public void Create(Account account)
         {
-            throw new NotImplementedException();
+            _context.Accounts.Add(account);
+        }
+
+        public void Delete(Account account)
+        {
+            _context.Accounts.Remove(account);
+        }
+
+        public async Task DeleteAsync(Guid key)
+        {
+            await _context.Accounts.Where(a => a.EntityKey == key).ExecuteDeleteAsync();
         }
     }
 }

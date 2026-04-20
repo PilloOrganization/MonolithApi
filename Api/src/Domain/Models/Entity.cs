@@ -2,7 +2,15 @@
 {
     public abstract class Entity
     {
-        public int Id { get; set; }
+        protected Entity()
+        {
+            EntityKey = Guid.NewGuid();
+            CreatedAt = DateTime.UtcNow;
+            UpdatedAt = DateTime.UtcNow;
+            IsDeleted = false;
+            IsActive = true;
+        }
+        public long Id { get; set; }
         public Guid EntityKey { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime UpdatedAt { get; set; }

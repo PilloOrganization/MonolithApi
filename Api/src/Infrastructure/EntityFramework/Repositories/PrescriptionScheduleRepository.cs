@@ -1,28 +1,37 @@
 ﻿using Domain.Models;
 using Domain.Repositories.Interfaces;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.EntityFramework.Repositories
 {
     public class PrescriptionScheduleRepository : IPrescriptionScheduleRepository
     {
-        public Task CreateAsync(PrescriptionSchedule prescriptionSchedule)
+        private readonly SqlServerAppDbContext _context;
+
+        public PrescriptionScheduleRepository(SqlServerAppDbContext context)
         {
-            throw new NotImplementedException();
+            _context = context;
         }
 
-        public Task DeleteAsync(Guid key)
+        public async Task<IEnumerable<PrescriptionSchedule>> GetByCourseIdAsync(long courseId)
         {
-            throw new NotImplementedException();
+            return  await _context.PrescriptionSchedules.Where(p => p.CourseId == courseId).Include(p => p.Doses).Include(p => p.Medicine).ToListAsync();
         }
 
-        public Task<IEnumerable<PrescriptionSchedule>> GetByCourseKeyAsync(Guid courseKey)
+        public async Task<IEnumerable<PrescriptionSchedule>> GetByCourseKeyAsync(Guid courseKey)
         {
-            throw new NotImplementedException();
+            Course course = await _context.Courses.Where(c => c.EntityKey == courseKey).Include(c => c.PrescriptionSchedules).SingleAsync();
+            return _context.PrescriptionSchedules;
+        }
+
+        public void Create(PrescriptionSchedule prescriptionSchedule)
+        {
+            _context.Add(prescriptionSchedule);
+        }
+
+        public async Task DeleteAsync(Guid key)
+        {
+            await _context.PrescriptionSchedules.Where(p => p.EntityKey == key).ExecuteDeleteAsync();
         }
     }
 }

@@ -4,7 +4,7 @@ namespace Domain.Repositories.Interfaces
 {
     public interface IMedicineRepository
     {
-        Task CreateAsync(Medicine medicine);
+        void Create(Medicine medicine);
         Task DeleteAsync(Guid key);
     }
 }

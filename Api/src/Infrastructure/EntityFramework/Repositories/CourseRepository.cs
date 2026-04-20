@@ -1,27 +1,31 @@
 ﻿using Domain.Models;
 using Domain.Repositories.Interfaces;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.EntityFramework.Repositories
 {
     public class CourseRepository : ICourseRepository
     {
-        public CourseRepository()
+        private readonly SqlServerAppDbContext _context;
+
+        public CourseRepository(SqlServerAppDbContext context)
         {
+            _context = context;
         }
 
-        public Task CreateAsync(Course course)
+        public async Task<IEnumerable<Course>> GetCoursesByAccountIdAsync(long accountId)
         {
-            throw new NotImplementedException();
+            return await _context.Courses.Where(c => c.AccountId == accountId).ToListAsync();
         }
 
-        public Task DeleteAsync(Guid key)
+        public void Create(Course course)
         {
-            throw new NotImplementedException();
+            _context.Add(course);
+        }
+
+        public void Delete(Course course)
+        {
+            _context.Remove(course);
         }
     }
 }

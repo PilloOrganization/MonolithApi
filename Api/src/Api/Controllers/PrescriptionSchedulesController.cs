@@ -8,12 +8,12 @@ namespace Api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class PrescriptionScheduleController : ControllerBase
+    public class PrescriptionSchedulesController : ControllerBase
     {
         private readonly IMediator _mediator;
         private readonly IMapper _mapper;
 
-        public PrescriptionScheduleController(IMediator mediator, IMapper mapper)
+        public PrescriptionSchedulesController(IMediator mediator, IMapper mapper)
         {
             _mediator = mediator;
             _mapper = mapper;

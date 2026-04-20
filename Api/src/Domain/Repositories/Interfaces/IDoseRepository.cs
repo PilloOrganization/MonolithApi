@@ -4,8 +4,8 @@ namespace Domain.Repositories.Interfaces
 {
     public interface IDoseRepository
     {
-        Task DeleteAsync(Guid key);
+        void BulkCreate(IEnumerable<Dose> doses);
         Task UpdateIsTakenAsync(Guid key, bool isTaken);
-        Task BulkCreateAsync(IEnumerable<Dose> doses);
+        Task DeleteAsync(Guid key);
     }
 }

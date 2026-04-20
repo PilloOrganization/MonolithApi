@@ -1,28 +1,31 @@
 ﻿using Domain.Models;
 using Domain.Repositories.Interfaces;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.EntityFramework.Repositories
 {
     public class DoseRepository : IDoseRepository
     {
-        public Task BulkCreateAsync(IEnumerable<Dose> doses)
+        private readonly SqlServerAppDbContext _context;
+
+        public DoseRepository(SqlServerAppDbContext context)
         {
-            throw new NotImplementedException();
+            _context = context;
         }
 
-        public Task DeleteAsync(Guid key)
+        public void BulkCreate(IEnumerable<Dose> doses)
         {
-            throw new NotImplementedException();
+            _context.Doses.AddRange(doses);
         }
 
-        public Task UpdateIsTakenAsync(Guid key, bool isTaken)
+        public async Task UpdateIsTakenAsync(Guid key, bool isTaken)
         {
-            throw new NotImplementedException();
+            await _context.Doses.Where(d => d.EntityKey == key).ExecuteUpdateAsync(d => d.SetProperty(p => p.IsTaken, isTaken));
+        }
+
+        public async Task DeleteAsync(Guid key)
+        {
+            await _context.Doses.Where(d => d.EntityKey == key).ExecuteDeleteAsync();
         }
     }
 }

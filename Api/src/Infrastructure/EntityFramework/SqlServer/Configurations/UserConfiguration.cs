@@ -1,27 +1,38 @@
 ﻿using Domain.Models;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Infrastructure.EntityFramework.SqlServer.Configurations
 {
-    public class UserConfiguration : IEntityTypeConfiguration<User>
+    public class UserConfiguration : BaseEntityConfiguration<User>
     {
-        public void Configure(EntityTypeBuilder<User> builder)
+        public override void Configure(EntityTypeBuilder<User> builder)
         {
-            builder.HasKey(p => p.Id);
+            base.Configure(builder);
 
-            // Configure properties
-            //builder.Property(p => p.Name)
-            //    .IsRequired()
-            //    .HasMaxLength(200);
+            builder.Property(u => u.Username)
+                .HasMaxLength(50)
+                .IsRequired();
 
-            //builder.Property(p => p.Price)
-            //    .HasPrecision(18, 2);
+            builder.HasIndex(u => u.Username)
+                .IsUnique();
+
+            builder.Property(u => u.Email)
+                .HasMaxLength(70)
+                .IsRequired();
+
+            builder.HasIndex(u => u.Email)
+                .IsUnique();
+
+            builder.Property(u => u.PhoneNumber)
+                .HasMaxLength(20)
+                .IsRequired();
+
+            builder.HasIndex(u => u.PhoneNumber)
+                .IsUnique();
+
+            builder.Property(u => u.Password)
+                .HasMaxLength(200)
+                .IsRequired();
         }
     }
 }

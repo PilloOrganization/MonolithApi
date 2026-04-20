@@ -1,23 +1,26 @@
 ﻿using Domain.Models;
 using Domain.Repositories.Interfaces;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.EntityFramework.Repositories
 {
     public class MedicineRepository : IMedicineRepository
     {
-        public Task CreateAsync(Medicine medicine)
+        private readonly SqlServerAppDbContext _context;
+
+        public MedicineRepository(SqlServerAppDbContext context)
         {
-            throw new NotImplementedException();
+            _context = context;
         }
 
-        public Task DeleteAsync(Guid key)
+        public void Create(Medicine medicine)
         {
-            throw new NotImplementedException();
+            _context.Add(medicine);
+        }
+
+        public async Task DeleteAsync(Guid key)
+        {
+            await _context.Medicines.Where(m => m.EntityKey == key).ExecuteDeleteAsync();
         }
     }
 }

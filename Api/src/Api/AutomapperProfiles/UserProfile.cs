@@ -9,7 +9,7 @@ namespace Api.AutomapperProfiles
         public UserProfile()
         {
             CreateMap<RegisterUserRequest, RegisterUserCommand>();
-            CreateMap<LoginUserRequest, RegisterUserCommand>();
+            CreateMap<LoginUserRequest, LoginUserCommand>();
         }
     }
 }

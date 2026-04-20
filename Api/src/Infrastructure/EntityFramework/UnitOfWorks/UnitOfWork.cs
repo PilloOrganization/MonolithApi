@@ -1,30 +1,46 @@
 ﻿using Application.UnitOfWorks.Interfaces;
 using Domain.Repositories.Interfaces;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Infrastructure.EntityFramework.UnitOfWorks
 {
     public class UnitOfWork : IUnitOfWork
     {
-        public IUserRepository userRepository { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-        public IAccountRepository accountRepository { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-        public ICourseRepository courseRepository { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-        public IDoseRepository doseRepository { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-        public IMedicineRepository medicineRepository { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-        public IPrescriptionScheduleRepository prescriptionScheduleRepository { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+        private readonly SqlServerAppDbContext _context;
+
+        public IUserRepository userRepository { get; set; }
+        public IAccountRepository accountRepository { get; set; }
+        public ICourseRepository courseRepository { get; set; }
+        public IDoseRepository doseRepository { get; set; }
+        public IMedicineRepository medicineRepository { get; set; }
+        public IPrescriptionScheduleRepository prescriptionScheduleRepository { get; set; }
+
+        public UnitOfWork(
+            SqlServerAppDbContext context,
+            IUserRepository userRepository,
+            IAccountRepository accountRepository,
+            ICourseRepository courseRepository,
+            IDoseRepository doseRepository,
+            IMedicineRepository medicineRepository,
+            IPrescriptionScheduleRepository prescriptionScheduleRepository)
+        {
+            _context = context ?? throw new ArgumentNullException(nameof(context));
+
+            this.userRepository = userRepository ?? throw new ArgumentNullException(nameof(userRepository));
+            this.accountRepository = accountRepository ?? throw new ArgumentNullException(nameof(accountRepository));
+            this.courseRepository = courseRepository ?? throw new ArgumentNullException(nameof(courseRepository));
+            this.doseRepository = doseRepository ?? throw new ArgumentNullException(nameof(doseRepository));
+            this.medicineRepository = medicineRepository ?? throw new ArgumentNullException(nameof(medicineRepository));
+            this.prescriptionScheduleRepository = prescriptionScheduleRepository ?? throw new ArgumentNullException(nameof(prescriptionScheduleRepository));
+        }
 
         public void Dispose()
         {
-            throw new NotImplementedException();
+            _context?.Dispose();
         }
 
         public Task SaveChangesAsync(CancellationToken cancellationToken)
         {
-            throw new NotImplementedException();
+            return _context.SaveChangesAsync(cancellationToken);
         }
     }
 }
