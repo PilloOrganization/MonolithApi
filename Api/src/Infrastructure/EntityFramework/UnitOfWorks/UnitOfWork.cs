@@ -7,12 +7,12 @@ namespace Infrastructure.EntityFramework.UnitOfWorks
     {
         private readonly SqlServerAppDbContext _context;
 
-        public IUserRepository userRepository { get; set; }
-        public IAccountRepository accountRepository { get; set; }
-        public ICourseRepository courseRepository { get; set; }
-        public IDoseRepository doseRepository { get; set; }
-        public IMedicineRepository medicineRepository { get; set; }
-        public IPrescriptionScheduleRepository prescriptionScheduleRepository { get; set; }
+        public IUserRepository UserRepository { get; set; }
+        public IAccountRepository AccountRepository { get; set; }
+        public ICourseRepository CourseRepository { get; set; }
+        public IDoseRepository DoseRepository { get; set; }
+        public IMedicineRepository MedicineRepository { get; set; }
+        public IPrescriptionScheduleRepository PrescriptionScheduleRepository { get; set; }
 
         public UnitOfWork(
             SqlServerAppDbContext context,
@@ -25,12 +25,12 @@ namespace Infrastructure.EntityFramework.UnitOfWorks
         {
             _context = context ?? throw new ArgumentNullException(nameof(context));
 
-            this.userRepository = userRepository ?? throw new ArgumentNullException(nameof(userRepository));
-            this.accountRepository = accountRepository ?? throw new ArgumentNullException(nameof(accountRepository));
-            this.courseRepository = courseRepository ?? throw new ArgumentNullException(nameof(courseRepository));
-            this.doseRepository = doseRepository ?? throw new ArgumentNullException(nameof(doseRepository));
-            this.medicineRepository = medicineRepository ?? throw new ArgumentNullException(nameof(medicineRepository));
-            this.prescriptionScheduleRepository = prescriptionScheduleRepository ?? throw new ArgumentNullException(nameof(prescriptionScheduleRepository));
+            this.UserRepository = userRepository ?? throw new ArgumentNullException(nameof(userRepository));
+            this.AccountRepository = accountRepository ?? throw new ArgumentNullException(nameof(accountRepository));
+            this.CourseRepository = courseRepository ?? throw new ArgumentNullException(nameof(courseRepository));
+            this.DoseRepository = doseRepository ?? throw new ArgumentNullException(nameof(doseRepository));
+            this.MedicineRepository = medicineRepository ?? throw new ArgumentNullException(nameof(medicineRepository));
+            this.PrescriptionScheduleRepository = prescriptionScheduleRepository ?? throw new ArgumentNullException(nameof(prescriptionScheduleRepository));
         }
 
         public void Dispose()

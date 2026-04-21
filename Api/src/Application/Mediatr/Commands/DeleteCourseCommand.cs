@@ -1,3 +1,4 @@
+using Application.UnitOfWorks.Interfaces;
 using MediatR;
 
 namespace Application.Mediatr.Commands
@@ -8,14 +9,18 @@ namespace Application.Mediatr.Commands
 
         public class Handler : IRequestHandler<DeleteCourseCommand, object>
         {
-            public Handler()
+            private readonly IUnitOfWork _unitOfWork;
+
+            public Handler(IUnitOfWork unitOfWork)
             {
-                // Assign dependencies here
+                _unitOfWork = unitOfWork;
             }
 
             public async Task<object> Handle(DeleteCourseCommand request, CancellationToken cancellationToken)
             {
-                // TODO: Implement delete logic
+                var course = await _unitOfWork.CourseRepository.GetAsync(request.CourseKey);
+                _unitOfWork.CourseRepository.Delete(course);
+                await _unitOfWork.SaveChangesAsync(cancellationToken);
                 return await Task.FromResult(new { Success = true });
             }
         }

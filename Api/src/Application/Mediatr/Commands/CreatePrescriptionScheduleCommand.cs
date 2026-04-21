@@ -1,73 +1,64 @@
+using Application.DataTransferObjects;
+using Application.UnitOfWorks.Interfaces;
+using AutoMapper;
 using Domain.Models;
 using MediatR;
 
 namespace Application.Mediatr.Commands
 {
-    public class CreatePrescriptionScheduleCommand : IRequest<object>
+    public class CreatePrescriptionScheduleCommand : IRequest<PrescriptionScheduleDto>
     {
         public Guid AccountKey { get; set; }
-        public string MedicineKey { get; set; } = string.Empty;
-        public string MedicineName { get; set; } = string.Empty;
-        public DateTime StartDate { get; set; }
-        public uint? DurationInDays { get; set; }
-        public List<DateTime> DailyDoseTimes { get; set; } = new List<DateTime>();
-        public bool IsInfinite()
-        {
-            return !DurationInDays.HasValue;
-        }
+        public Guid? MedicineKey { get; set; }
+        public string? MedicineName { get; set; }
+        public DateOnly StartDate { get; set; }
+        public uint DurationInDays { get; set; }
+        public List<TimeOnly> DailyDoseTimes { get; set; } = new List<TimeOnly>();
 
-        public class Handler : IRequestHandler<CreatePrescriptionScheduleCommand, object>
+        public class Handler : IRequestHandler<CreatePrescriptionScheduleCommand, PrescriptionScheduleDto>
         {
-            public Handler()
+            private readonly IUnitOfWork _unitOfWork;
+            private readonly IMapper _mapper;
+
+            public Handler(IUnitOfWork unitOfWork, IMapper mapper)
             {
+                _unitOfWork = unitOfWork;
+                _mapper = mapper;
             }
 
-            public async Task<object> Handle(CreatePrescriptionScheduleCommand request, CancellationToken cancellationToken)
+            public async Task<PrescriptionScheduleDto> Handle(CreatePrescriptionScheduleCommand request, CancellationToken cancellationToken)
             {
-                var medicine = new Medicine
-                {
-                    Name = request.MedicineName
-                };
-
+                Medicine medicine = await GetMedicine(request.MedicineKey, request.MedicineName);
                 var prescriptionSchedule = new PrescriptionSchedule
                 {
-                    Medicine = medicine,
-                    Doses = new List<Dose>()
+                    Medicine = medicine
                 };
 
-                if (!request.IsInfinite())
+                for (int day = 0; day < request.DurationInDays; day++)
                 {
-                    for (uint day = 0; day < request.DurationInDays!.Value; day++)
+                    DateOnly currentDay = request.StartDate.AddDays(day);
+                    foreach (var time in request.DailyDoseTimes)
                     {
-                        foreach (var time in request.DailyDoseTimes)
+                        DateTime exactDoseTime = currentDay.ToDateTime(time);
+                        prescriptionSchedule.Doses.Add(new Dose
                         {
-                            var doseTime = request.StartDate.Date.AddDays(day).Add(time.TimeOfDay);
-                            prescriptionSchedule.Doses.Add(new Dose
-                            {
-                                Time = doseTime,
-                                IsTaken = false
-                            });
-                        }
+                            Time = exactDoseTime,
+                            IsTaken = false
+                        });
                     }
                 }
-                else
+                _unitOfWork.PrescriptionScheduleRepository.Create(prescriptionSchedule);
+                await _unitOfWork.SaveChangesAsync(cancellationToken);
+                return _mapper.Map<PrescriptionScheduleDto>(prescriptionSchedule);
+            }
+
+            private async Task<Medicine> GetMedicine(Guid? medicineKey, string? medicineName)
+            {
+                if (medicineKey.HasValue)
                 {
-                    // TODO: Handle infinite schedules appropriately (e.g., by creating doses on demand or using a different approach)
-                    // For infinite schedules, we can create doses for a reasonable future period (e.g., next 30 days)
-                    //for (uint day = 0; day < 30; day++)
-                    //{
-                    //    foreach (var time in request.DailyDoseTimes)
-                    //    {
-                    //        var doseTime = request.StartDate.Date.AddDays(day).Add(time.TimeOfDay);
-                    //        prescriptionSchedule.Doses.Add(new Dose
-                    //        {
-                    //            Time = doseTime,
-                    //            IsTaken = false
-                    //        });
-                    //    }
-                    //}
+                    return await _unitOfWork.MedicineRepository.GetAsync(medicineKey.Value);
                 }
-                return await Task.FromResult(new { Success = true, Schedule = prescriptionSchedule });
+                return new Medicine { Name = medicineName! };
             }
         }
     }

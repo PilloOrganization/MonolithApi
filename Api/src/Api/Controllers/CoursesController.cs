@@ -39,7 +39,7 @@ namespace Api.Controllers
         {
             var command = _mapper.Map<CreateCourseCommand>(request);
             var result = await _mediator.Send(command);
-            return Created();
+            return Ok(new { courseKey = result });
         }
 
         //[HttpPut("{courseKey}")]

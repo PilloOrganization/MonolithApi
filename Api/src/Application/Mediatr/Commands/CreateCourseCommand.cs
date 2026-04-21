@@ -1,23 +1,37 @@
+using Application.UnitOfWorks.Interfaces;
+using AutoMapper;
+using Domain.Models;
 using MediatR;
 
 namespace Application.Mediatr.Commands
 {
-    public class CreateCourseCommand : IRequest<object>
+    public class CreateCourseCommand : IRequest<Guid>
     {
         public Guid AccountKey { get; set; }
         public string Name { get; set; } = string.Empty;
 
-        public class Handler : IRequestHandler<CreateCourseCommand, object>
+        public class Handler : IRequestHandler<CreateCourseCommand, Guid>
         {
-            public Handler()
+            private readonly IMapper _mapper;
+            private readonly IUnitOfWork _unitOfWork;
+
+            public Handler(IUnitOfWork unitOfWork, IMapper mapper)
             {
-                // Assign dependencies here
+                _unitOfWork = unitOfWork;
+                _mapper = mapper;
             }
 
-            public async Task<object> Handle(CreateCourseCommand request, CancellationToken cancellationToken)
+            public async Task<Guid> Handle(CreateCourseCommand request, CancellationToken cancellationToken)
             {
-                // TODO: Implement creation logic
-                return await Task.FromResult(new { Success = true });
+                Account account = await _unitOfWork.AccountRepository.GetByKeyAsync(request.AccountKey);
+                var course = new Course
+                {
+                    Name = request.Name,
+                    AccountId = account.Id
+                };
+                _unitOfWork.CourseRepository.Create(course);
+                await _unitOfWork.SaveChangesAsync(cancellationToken);
+                return course.EntityKey;
             }
         }
     }

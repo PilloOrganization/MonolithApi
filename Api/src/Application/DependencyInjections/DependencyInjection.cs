@@ -19,6 +19,26 @@ namespace Application.DependencyInjections
         {
             services.AddAutoMapper(cfg =>
             {
+                cfg.AddProfile<AccountProfile>();
+            }, typeof(DependencyInjection));
+            services.AddAutoMapper(cfg =>
+            {
+                cfg.AddProfile<CourseProfile>();
+            }, typeof(DependencyInjection));
+            services.AddAutoMapper(cfg =>
+            {
+                cfg.AddProfile<DoseProfile>();
+            }, typeof(DependencyInjection));
+            services.AddAutoMapper(cfg =>
+            {
+                cfg.AddProfile<MedicineProfile>();
+            }, typeof(DependencyInjection));
+            services.AddAutoMapper(cfg =>
+            {
+                cfg.AddProfile<PrescriptionScheduleProfile>();
+            }, typeof(DependencyInjection));
+            services.AddAutoMapper(cfg =>
+            {
                 cfg.AddProfile<UserProfile>();
             }, typeof(DependencyInjection));
         }

@@ -1,5 +1,4 @@
 ﻿using Application.DataTransferObjects;
-using Application.Mediatr.Queries;
 using Application.UnitOfWorks.Interfaces;
 using AutoMapper;
 using Domain.Models;
@@ -29,9 +28,9 @@ namespace Application.Mediatr.Commands
             public async Task<UserDto> Handle(LoginUserCommand request, CancellationToken cancellationToken)
             {
                 // TODO: understand in a runtime if the input is a username, phone number, or email and then query the database accordingly
-                User? user = await _unitOfWork.userRepository.GetUserByUsernameAsync(request.UsernameOrPhoneOrEmail)
-                    ?? await _unitOfWork.userRepository.GetUserByPhoneAsync(request.UsernameOrPhoneOrEmail)
-                    ?? await _unitOfWork.userRepository.GetUserByEmailAsync(request.UsernameOrPhoneOrEmail);
+                User? user = await _unitOfWork.UserRepository.GetUserByUsernameAsync(request.UsernameOrPhoneOrEmail)
+                    ?? await _unitOfWork.UserRepository.GetUserByPhoneAsync(request.UsernameOrPhoneOrEmail)
+                    ?? await _unitOfWork.UserRepository.GetUserByEmailAsync(request.UsernameOrPhoneOrEmail);
                 if (user == null)
                 {
                     throw new Exception("User not found");
@@ -41,14 +40,14 @@ namespace Application.Mediatr.Commands
                     throw new Exception("Invalid password");
                 }
                 var userDto = _mapper.Map<UserDto>(user);
-                Account defaultAccount = (await _unitOfWork.accountRepository.GetAccountsByUserIdAsync(user.Id)).Single(a => a.IsDefault);
+                Account defaultAccount = (await _unitOfWork.AccountRepository.GetByUserIdAsync(user.Id)).Single(a => a.IsDefault);
                 userDto.DefaultAccountDto = _mapper.Map<AccountDto>(defaultAccount);
-                IEnumerable<Course> courses = await _unitOfWork.courseRepository.GetCoursesByAccountIdAsync(defaultAccount.Id);
+                IEnumerable<Course> courses = await _unitOfWork.CourseRepository.GetByAccountIdAsync(defaultAccount.Id);
                 userDto.DefaultAccountDto.Courses = _mapper.Map<IEnumerable<CourseDto>>(courses);
                 if (courses.Any())
                 {
                     var firstCourse = courses.First();
-                    IEnumerable<PrescriptionSchedule> prescriptionSchedules = await _unitOfWork.prescriptionScheduleRepository.GetByCourseIdAsync(firstCourse.Id);
+                    IEnumerable<PrescriptionSchedule> prescriptionSchedules = await _unitOfWork.PrescriptionScheduleRepository.GetByCourseIdAsync(firstCourse.Id);
                     userDto.DefaultAccountDto.Courses.First().PrescriptionSchedules = _mapper.Map<IEnumerable<PrescriptionScheduleDto>>(prescriptionSchedules);
                 }
                 return userDto;

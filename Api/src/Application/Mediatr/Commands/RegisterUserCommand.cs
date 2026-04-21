@@ -40,7 +40,7 @@ namespace Application.Mediatr.Commands
                 {
                     IsDefault = true
                 });
-                _unitOfWork.userRepository.Create(user);
+                _unitOfWork.UserRepository.Create(user);
                 await _unitOfWork.SaveChangesAsync(cancellationToken);
                 return Unit.Value;
             }

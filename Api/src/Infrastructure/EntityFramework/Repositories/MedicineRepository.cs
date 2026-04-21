@@ -13,6 +13,11 @@ namespace Infrastructure.EntityFramework.Repositories
             _context = context;
         }
 
+        public async Task<Medicine> GetAsync(Guid key)
+        {
+            return await _context.Medicines.SingleAsync(m => m.EntityKey == key);
+        }
+
         public void Create(Medicine medicine)
         {
             _context.Add(medicine);

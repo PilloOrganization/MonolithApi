@@ -1,4 +1,5 @@
 ﻿using Api.Models.Requests;
+using Application.DataTransferObjects;
 using Application.Mediatr.Commands;
 using AutoMapper;
 using MediatR;
@@ -20,11 +21,11 @@ namespace Api.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<object>> Post(CreatePrescriptionScheduleRequest request)
+        public async Task<ActionResult<PrescriptionScheduleDto>> Post(CreatePrescriptionScheduleRequest request)
         {
             var command = _mapper.Map<CreatePrescriptionScheduleCommand>(request);
-            var result = await _mediator.Send(command);
-            return Created();
+            PrescriptionScheduleDto result = await _mediator.Send(command);
+            return Ok(result);
         }
 
         //[HttpPut("{PrescriptionScheduleKey}")]
@@ -37,10 +38,10 @@ namespace Api.Controllers
         //}
 
         [HttpDelete("{PrescriptionScheduleKey}")]
-        public async Task<ActionResult<object>> Delete(Guid PrescriptionScheduleKey)
+        public async Task<ActionResult<object>> Delete(Guid prescriptionScheduleKey)
         {
-            var command = new DeletePrescriptionScheduleCommand { PrescriptionScheduleKey = PrescriptionScheduleKey };
-            var result = await _mediator.Send(command);
+            var command = new DeletePrescriptionScheduleCommand { PrescriptionScheduleKey = prescriptionScheduleKey };
+            await _mediator.Send(command);
             return NoContent();
         }
     }

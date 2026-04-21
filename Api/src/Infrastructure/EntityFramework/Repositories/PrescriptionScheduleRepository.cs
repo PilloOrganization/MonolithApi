@@ -15,7 +15,7 @@ namespace Infrastructure.EntityFramework.Repositories
 
         public async Task<IEnumerable<PrescriptionSchedule>> GetByCourseIdAsync(long courseId)
         {
-            return  await _context.PrescriptionSchedules.Where(p => p.CourseId == courseId).Include(p => p.Doses).Include(p => p.Medicine).ToListAsync();
+            return await _context.PrescriptionSchedules.Where(p => p.CourseId == courseId).Include(p => p.Doses).Include(p => p.Medicine).ToListAsync();
         }
 
         public async Task<IEnumerable<PrescriptionSchedule>> GetByCourseKeyAsync(Guid courseKey)

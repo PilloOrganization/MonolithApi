@@ -13,9 +13,19 @@ namespace Infrastructure.EntityFramework.Repositories
             _context = context;
         }
 
-        public async Task<IEnumerable<Course>> GetCoursesByAccountIdAsync(long accountId)
+        public async Task<IEnumerable<Course>> GetByAccountIdAsync(long accountId)
         {
             return await _context.Courses.Where(c => c.AccountId == accountId).ToListAsync();
+        }
+
+        public async Task<Course> GetAsync(Guid courseKey)
+        {
+            return await _context.Courses
+                                 .Include(c => c.PrescriptionSchedules)
+                                     .ThenInclude(ps => ps.Medicine)
+                                 .Include(c => c.PrescriptionSchedules)
+                                     .ThenInclude(ps => ps.Doses)
+                                 .SingleAsync(c => c.EntityKey == courseKey);
         }
 
         public void Create(Course course)

@@ -13,9 +13,14 @@ namespace Infrastructure.EntityFramework.Repositories
             _context = context;
         }
 
-        public async Task<IEnumerable<Account>> GetAccountsByUserIdAsync(long userId)
+        public async Task<IEnumerable<Account>> GetByUserIdAsync(long userId)
         {
             return await _context.Accounts.Where(a => a.UserId == userId).ToListAsync();
+        }
+
+        public async Task<Account> GetByKeyAsync(Guid key)
+        {
+            return await _context.Accounts.SingleAsync(a => a.EntityKey == key);
         }
 
         public void Create(Account account)
