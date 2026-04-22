@@ -15,22 +15,22 @@ namespace Infrastructure.EntityFramework.Repositories
 
         public async Task<IEnumerable<Course>> GetByAccountIdAsync(long accountId)
         {
-            return await _context.Courses.Where(c => c.AccountId == accountId).ToListAsync();
+            return await _context.Courses.Where(e => e.AccountId == accountId).OrderByDescending(e => e.IsActive).ThenByDescending(e => e.UpdatedAt).ToListAsync();
         }
 
         public async Task<long> GetIdAsync(Guid courseKey)
         {
-            return await _context.Courses.Where(c => c.EntityKey == courseKey).Select(e => e.Id).SingleAsync();
+            return await _context.Courses.Where(e => e.EntityKey == courseKey).Select(e => e.Id).SingleAsync();
         }
 
         public async Task<Course> GetAsync(Guid courseKey)
         {
             return await _context.Courses
-                                 .Include(c => c.PrescriptionSchedules)
+                                 .Include(e => e.PrescriptionSchedules)
                                      .ThenInclude(ps => ps.Medicine)
-                                 .Include(c => c.PrescriptionSchedules)
-                                     .ThenInclude(ps => ps.Doses)
-                                 .SingleAsync(c => c.EntityKey == courseKey);
+                                 .Include(e => e.PrescriptionSchedules)
+                                     .ThenInclude(e => e.Doses)
+                                 .SingleAsync(e => e.EntityKey == courseKey);
         }
 
         public void Create(Course course)
@@ -46,7 +46,7 @@ namespace Infrastructure.EntityFramework.Repositories
         public async Task<IEnumerable<Course>> GetByAccountKeyAsync(Guid accountKey)
         {
             return await _context.Courses
-                                 .Where(c => c.Account.EntityKey == accountKey)
+                                 .Where(e => e.Account.EntityKey == accountKey)
                                  .ToListAsync();
         }
     }

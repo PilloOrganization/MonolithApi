@@ -21,22 +21,22 @@ namespace Infrastructure.EntityFramework.Repositories
 
         public Task<User?> GetByEmailAsync(string email)
         {
-            return GetByProperty(u => u.Email == email);
+            return GetByProperty(e => e.Email == email);
         }
 
         public Task<User?> GetByPhoneAsync(string phone)
         {
-            return GetByProperty(u => u.PhoneNumber == phone);
+            return GetByProperty(e => e.PhoneNumber == phone);
         }
 
         public Task<User?> GetByUsernameAsync(string username)
         {
-            return GetByProperty(u => u.Username == username);
+            return GetByProperty(e => e.Username == username);
         }
 
         private Task<User?> GetByProperty(Expression<Func<User, bool>> predicate)
         {
-            return _context.Users.Include(u => u.Accounts).FirstOrDefaultAsync(predicate);
+            return _context.Users.Include(e => e.Accounts).FirstOrDefaultAsync(predicate);
         }
 
         public void Create(User user)

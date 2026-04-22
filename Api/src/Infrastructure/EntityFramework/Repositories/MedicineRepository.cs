@@ -15,11 +15,11 @@ namespace Infrastructure.EntityFramework.Repositories
 
         public async Task<Medicine> GetAsync(Guid key)
         {
-            return await _context.Medicines.SingleAsync(m => m.EntityKey == key);
+            return await _context.Medicines.SingleAsync(e => e.EntityKey == key);
         }
         public async Task<Medicine?> GetAsync(string name, long userId)
         {
-            return await _context.Medicines.SingleOrDefaultAsync(m => m.Name == name && m.UserId == userId);
+            return await _context.Medicines.SingleOrDefaultAsync(e => e.Name == name && e.UserId == userId);
         }
 
         public void Create(Medicine medicine)
@@ -29,7 +29,7 @@ namespace Infrastructure.EntityFramework.Repositories
 
         public async Task DeleteAsync(Guid key)
         {
-            await _context.Medicines.Where(m => m.EntityKey == key).ExecuteDeleteAsync();
+            await _context.Medicines.Where(e => e.EntityKey == key).ExecuteDeleteAsync();
         }
     }
 }

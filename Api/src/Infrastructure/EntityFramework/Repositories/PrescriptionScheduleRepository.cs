@@ -15,14 +15,14 @@ namespace Infrastructure.EntityFramework.Repositories
 
         public async Task<IEnumerable<PrescriptionSchedule>> GetByCourseIdAsync(long courseId)
         {
-            return await _context.PrescriptionSchedules.Where(p => p.CourseId == courseId).Include(p => p.Doses).Include(p => p.Medicine).ToListAsync();
+            return await _context.PrescriptionSchedules.Where(e => e.CourseId == courseId).Include(e => e.Doses).Include(e => e.Medicine).ToListAsync();
         }
 
         public async Task<IEnumerable<PrescriptionSchedule>> GetByCourseKeyAsync(Guid courseKey)
         {
             return await _context.PrescriptionSchedules
                                  .Where(e => e.Course.EntityKey == courseKey)
-                                 .Include(c => c.Medicine)
+                                 .Include(e => e.Medicine)
                                  .Include(e => e.Doses).ToListAsync();
         }
 
@@ -33,7 +33,7 @@ namespace Infrastructure.EntityFramework.Repositories
 
         public async Task DeleteAsync(Guid key)
         {
-            await _context.PrescriptionSchedules.Where(p => p.EntityKey == key).ExecuteDeleteAsync();
+            await _context.PrescriptionSchedules.Where(e => e.EntityKey == key).ExecuteDeleteAsync();
         }
     }
 }

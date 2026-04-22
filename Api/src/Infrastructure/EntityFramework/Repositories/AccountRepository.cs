@@ -15,12 +15,12 @@ namespace Infrastructure.EntityFramework.Repositories
 
         public async Task<IEnumerable<Account>> GetByUserIdAsync(long userId)
         {
-            return await _context.Accounts.Where(a => a.UserId == userId).ToListAsync();
+            return await _context.Accounts.Where(e => e.UserId == userId).ToListAsync();
         }
 
         public async Task<Account> GetByKeyAsync(Guid key)
         {
-            return await _context.Accounts.SingleAsync(a => a.EntityKey == key);
+            return await _context.Accounts.SingleAsync(e => e.EntityKey == key);
         }
 
         public void Create(Account account)
@@ -35,7 +35,7 @@ namespace Infrastructure.EntityFramework.Repositories
 
         public async Task DeleteAsync(Guid key)
         {
-            await _context.Accounts.Where(a => a.EntityKey == key).ExecuteDeleteAsync();
+            await _context.Accounts.Where(e => e.EntityKey == key).ExecuteDeleteAsync();
         }
     }
 }

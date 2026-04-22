@@ -20,12 +20,12 @@ namespace Infrastructure.EntityFramework.Repositories
 
         public async Task UpdateIsTakenAsync(Guid key, bool isTaken)
         {
-            await _context.Doses.Where(d => d.EntityKey == key).ExecuteUpdateAsync(d => d.SetProperty(p => p.IsTaken, isTaken));
+            await _context.Doses.Where(e => e.EntityKey == key).ExecuteUpdateAsync(e => e.SetProperty(e => e.IsTaken, isTaken));
         }
 
         public async Task DeleteAsync(Guid key)
         {
-            await _context.Doses.Where(d => d.EntityKey == key).ExecuteDeleteAsync();
+            await _context.Doses.Where(e => e.EntityKey == key).ExecuteDeleteAsync();
         }
     }
 }

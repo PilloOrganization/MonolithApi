@@ -44,10 +44,10 @@ namespace Application.Mediatr.Commands
                 userDto.DefaultAccountDto = _mapper.Map<AccountDto>(defaultAccount);
                 IEnumerable<Course> courses = await _unitOfWork.CourseRepository.GetByAccountIdAsync(defaultAccount.Id);
                 userDto.DefaultAccountDto.Courses = _mapper.Map<IEnumerable<CourseDto>>(courses);
-                if (courses.Any())
+                Course? firstActiveCourse = courses.FirstOrDefault(e => e.IsActive);
+                if (firstActiveCourse is not null)
                 {
-                    var firstCourse = courses.First();
-                    IEnumerable<PrescriptionSchedule> prescriptionSchedules = await _unitOfWork.PrescriptionScheduleRepository.GetByCourseIdAsync(firstCourse.Id);
+                    IEnumerable<PrescriptionSchedule> prescriptionSchedules = await _unitOfWork.PrescriptionScheduleRepository.GetByCourseIdAsync(firstActiveCourse.Id);
                     userDto.DefaultAccountDto.Courses.First().PrescriptionSchedules = _mapper.Map<IEnumerable<PrescriptionScheduleDto>>(prescriptionSchedules);
                 }
                 return userDto;

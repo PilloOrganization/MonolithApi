@@ -23,17 +23,17 @@ namespace Api.Controllers
         }
 
         [HttpPost(nameof(Register))]
-        public async Task<ActionResult<object>> Register(RegisterUserRequest userRegisterRequest)
+        public async Task<ActionResult<object>> Register(RegisterUserRequest request)
         {
-            var command = _mapper.Map<RegisterUserCommand>(userRegisterRequest);
+            var command = _mapper.Map<RegisterUserCommand>(request);
             var result = await _mediator.Send(command);
             return Created();
         }
 
         [HttpPost(nameof(Login))]
-        public async Task<ActionResult<object>> Login(LoginUserRequest userLoginRequest)
+        public async Task<ActionResult<object>> Login(LoginUserRequest request)
         {
-            var command = _mapper.Map<LoginUserCommand>(userLoginRequest);
+            var command = _mapper.Map<LoginUserCommand>(request);
             UserDto userDto = await _mediator.Send(command);
             var token = new AuthentificationDetails.JwtProvider(HttpContext.RequestServices.GetRequiredService<IConfiguration>()).GenerateToken(userDto.EntityKey, userDto.Username);
             return Ok(new { Token = token, DefaultAccount = userDto.DefaultAccountDto });
