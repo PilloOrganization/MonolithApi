@@ -31,7 +31,7 @@ namespace Application.Mediatr.Commands
             public async Task<PrescriptionScheduleDto> Handle(CreatePrescriptionScheduleCommand request, CancellationToken cancellationToken)
             {
                 long courseId = await _unitOfWork.CourseRepository.GetIdAsync(request.CourseKey);
-                Medicine medicine = await GetMedicine(request.MedicineKey, request.MedicineName, request.UserId);
+                Medicine medicine = await GetMedicine(request.MedicineKey, request.MedicineName!, request.UserId);
                 var prescriptionSchedule = new PrescriptionSchedule
                 {
                     CourseId = courseId,
@@ -56,13 +56,13 @@ namespace Application.Mediatr.Commands
                 return _mapper.Map<PrescriptionScheduleDto>(prescriptionSchedule);
             }
 
-            private async Task<Medicine> GetMedicine(Guid? medicineKey, string? medicineName, long userId)
+            private async Task<Medicine> GetMedicine(Guid? medicineKey, string medicineName, long userId)
             {
                 if (medicineKey.HasValue)
                 {
                     return await _unitOfWork.MedicineRepository.GetAsync(medicineKey.Value);
                 }
-                return new Medicine { Name = medicineName!, UserId = userId };
+                return await _unitOfWork.MedicineRepository.GetAsync(medicineName, userId) ?? new Medicine { Name = medicineName, UserId = userId };
             }
         }
     }

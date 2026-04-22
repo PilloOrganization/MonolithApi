@@ -11,12 +11,10 @@ namespace Infrastructure.EntityFramework.SqlServer.Configurations
             base.Configure(builder);
 
             builder.Property(a => a.FirstName)
-                .HasMaxLength(50)
-                .IsRequired();
+                .HasMaxLength(50);
 
             builder.Property(a => a.LastName)
-                .HasMaxLength(100)
-                .IsRequired();
+                .HasMaxLength(100);
 
             builder.HasOne(a => a.User)
                 .WithMany(u => u.Accounts)

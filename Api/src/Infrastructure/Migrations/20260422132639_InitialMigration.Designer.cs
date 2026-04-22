@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Infrastructure.Migrations
 {
     [DbContext(typeof(SqlServerAppDbContext))]
-    [Migration("20260422124324_InitialMigration")]
+    [Migration("20260422132639_InitialMigration")]
     partial class InitialMigration
     {
         /// <inheritdoc />
@@ -39,7 +39,6 @@ namespace Infrastructure.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("FirstName")
-                        .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
@@ -57,7 +56,6 @@ namespace Infrastructure.Migrations
                         .HasDefaultValue(false);
 
                     b.Property<string>("LastName")
-                        .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
@@ -71,6 +69,8 @@ namespace Infrastructure.Migrations
 
                     b.HasIndex("EntityKey")
                         .IsUnique();
+
+                    SqlServerIndexBuilderExtensions.IncludeProperties(b.HasIndex("EntityKey"), new[] { "IsDeleted" });
 
                     b.HasIndex("UserId");
 
@@ -119,6 +119,8 @@ namespace Infrastructure.Migrations
                     b.HasIndex("EntityKey")
                         .IsUnique();
 
+                    SqlServerIndexBuilderExtensions.IncludeProperties(b.HasIndex("EntityKey"), new[] { "IsDeleted" });
+
                     b.ToTable("Courses");
                 });
 
@@ -165,6 +167,8 @@ namespace Infrastructure.Migrations
                     b.HasIndex("EntityKey")
                         .IsUnique();
 
+                    SqlServerIndexBuilderExtensions.IncludeProperties(b.HasIndex("EntityKey"), new[] { "IsDeleted" });
+
                     b.HasIndex("PrescriptionScheduleId");
 
                     b.ToTable("Doses");
@@ -209,6 +213,8 @@ namespace Infrastructure.Migrations
 
                     b.HasIndex("EntityKey")
                         .IsUnique();
+
+                    SqlServerIndexBuilderExtensions.IncludeProperties(b.HasIndex("EntityKey"), new[] { "IsDeleted" });
 
                     b.HasIndex("Name")
                         .IsUnique();
@@ -255,6 +261,8 @@ namespace Infrastructure.Migrations
 
                     b.HasIndex("EntityKey")
                         .IsUnique();
+
+                    SqlServerIndexBuilderExtensions.IncludeProperties(b.HasIndex("EntityKey"), new[] { "IsDeleted" });
 
                     b.HasIndex("MedicineId");
 
@@ -315,6 +323,8 @@ namespace Infrastructure.Migrations
 
                     b.HasIndex("EntityKey")
                         .IsUnique();
+
+                    SqlServerIndexBuilderExtensions.IncludeProperties(b.HasIndex("EntityKey"), new[] { "IsDeleted" });
 
                     b.HasIndex("PhoneNumber")
                         .IsUnique();

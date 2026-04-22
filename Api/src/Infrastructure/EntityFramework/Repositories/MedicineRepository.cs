@@ -17,6 +17,10 @@ namespace Infrastructure.EntityFramework.Repositories
         {
             return await _context.Medicines.SingleAsync(m => m.EntityKey == key);
         }
+        public async Task<Medicine?> GetAsync(string name, long userId)
+        {
+            return await _context.Medicines.SingleOrDefaultAsync(m => m.Name == name && m.UserId == userId);
+        }
 
         public void Create(Medicine medicine)
         {

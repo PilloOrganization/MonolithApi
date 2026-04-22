@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore.Migrations;
+﻿using System;
+using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
@@ -57,8 +58,8 @@ namespace Infrastructure.Migrations
                     Id = table.Column<long>(type: "bigint", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     UserId = table.Column<long>(type: "bigint", nullable: false),
-                    FirstName = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
-                    LastName = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    FirstName = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
+                    LastName = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
                     IsDefault = table.Column<bool>(type: "bit", nullable: false),
                     EntityKey = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
@@ -163,7 +164,8 @@ namespace Infrastructure.Migrations
                 name: "IX_Accounts_EntityKey",
                 table: "Accounts",
                 column: "EntityKey",
-                unique: true);
+                unique: true)
+                .Annotation("SqlServer:Include", new[] { "IsDeleted" });
 
             migrationBuilder.CreateIndex(
                 name: "IX_Accounts_UserId",
@@ -179,13 +181,15 @@ namespace Infrastructure.Migrations
                 name: "IX_Courses_EntityKey",
                 table: "Courses",
                 column: "EntityKey",
-                unique: true);
+                unique: true)
+                .Annotation("SqlServer:Include", new[] { "IsDeleted" });
 
             migrationBuilder.CreateIndex(
                 name: "IX_Doses_EntityKey",
                 table: "Doses",
                 column: "EntityKey",
-                unique: true);
+                unique: true)
+                .Annotation("SqlServer:Include", new[] { "IsDeleted" });
 
             migrationBuilder.CreateIndex(
                 name: "IX_Doses_PrescriptionScheduleId",
@@ -196,7 +200,8 @@ namespace Infrastructure.Migrations
                 name: "IX_Medicines_EntityKey",
                 table: "Medicines",
                 column: "EntityKey",
-                unique: true);
+                unique: true)
+                .Annotation("SqlServer:Include", new[] { "IsDeleted" });
 
             migrationBuilder.CreateIndex(
                 name: "IX_Medicines_Name",
@@ -213,7 +218,8 @@ namespace Infrastructure.Migrations
                 name: "IX_PrescriptionSchedules_EntityKey",
                 table: "PrescriptionSchedules",
                 column: "EntityKey",
-                unique: true);
+                unique: true)
+                .Annotation("SqlServer:Include", new[] { "IsDeleted" });
 
             migrationBuilder.CreateIndex(
                 name: "IX_PrescriptionSchedules_MedicineId",
@@ -230,7 +236,8 @@ namespace Infrastructure.Migrations
                 name: "IX_Users_EntityKey",
                 table: "Users",
                 column: "EntityKey",
-                unique: true);
+                unique: true)
+                .Annotation("SqlServer:Include", new[] { "IsDeleted" });
 
             migrationBuilder.CreateIndex(
                 name: "IX_Users_PhoneNumber",

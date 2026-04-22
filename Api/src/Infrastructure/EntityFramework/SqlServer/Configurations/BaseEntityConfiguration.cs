@@ -4,8 +4,7 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Infrastructure.EntityFramework.SqlServer.Configurations
 {
-    public abstract class BaseEntityConfiguration<TEntity> : IEntityTypeConfiguration<TEntity>
-    where TEntity : Entity
+    public abstract class BaseEntityConfiguration<TEntity> : IEntityTypeConfiguration<TEntity> where TEntity : Entity
     {
         public virtual void Configure(EntityTypeBuilder<TEntity> builder)
         {
@@ -13,21 +12,15 @@ namespace Infrastructure.EntityFramework.SqlServer.Configurations
             builder.Property(x => x.Id)
             .ValueGeneratedOnAdd();
 
-            builder.Property(x => x.EntityKey)
-                .IsRequired();
-
+            builder.Property(x => x.EntityKey);
             builder.HasIndex(x => x.EntityKey)
+                .IncludeProperties(x => x.IsDeleted)
                 .IsUnique();
 
-            builder.Property(x => x.CreatedAt)
-                .IsRequired();
-
-            builder.Property(x => x.UpdatedAt)
-                .IsRequired();
-
+            builder.Property(x => x.CreatedAt);
+            builder.Property(x => x.UpdatedAt);
             builder.Property(x => x.IsDeleted)
                 .HasDefaultValue(false);
-
             builder.Property(x => x.IsActive)
                 .HasDefaultValue(true);
 
