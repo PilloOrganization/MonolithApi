@@ -1,4 +1,5 @@
 using Application.DataTransferObjects;
+using Application.Mediatr.Interfaces;
 using Application.UnitOfWorks.Interfaces;
 using AutoMapper;
 using Domain.Models;
@@ -6,14 +7,15 @@ using MediatR;
 
 namespace Application.Mediatr.Commands
 {
-    public class CreatePrescriptionScheduleCommand : IRequest<PrescriptionScheduleDto>
+    public class CreatePrescriptionScheduleCommand : IRequest<PrescriptionScheduleDto>, IUserScopedRequest
     {
-        public Guid AccountKey { get; set; }
+        public Guid CourseKey { get; set; }
         public Guid? MedicineKey { get; set; }
         public string? MedicineName { get; set; }
         public DateOnly StartDate { get; set; }
         public uint DurationInDays { get; set; }
         public List<TimeOnly> DailyDoseTimes { get; set; } = new List<TimeOnly>();
+        public long UserId { get; set; }
 
         public class Handler : IRequestHandler<CreatePrescriptionScheduleCommand, PrescriptionScheduleDto>
         {
@@ -28,9 +30,11 @@ namespace Application.Mediatr.Commands
 
             public async Task<PrescriptionScheduleDto> Handle(CreatePrescriptionScheduleCommand request, CancellationToken cancellationToken)
             {
-                Medicine medicine = await GetMedicine(request.MedicineKey, request.MedicineName);
+                long courseId = await _unitOfWork.CourseRepository.GetIdAsync(request.CourseKey);
+                Medicine medicine = await GetMedicine(request.MedicineKey, request.MedicineName, request.UserId);
                 var prescriptionSchedule = new PrescriptionSchedule
                 {
+                    CourseId = courseId,
                     Medicine = medicine
                 };
 
@@ -52,13 +56,13 @@ namespace Application.Mediatr.Commands
                 return _mapper.Map<PrescriptionScheduleDto>(prescriptionSchedule);
             }
 
-            private async Task<Medicine> GetMedicine(Guid? medicineKey, string? medicineName)
+            private async Task<Medicine> GetMedicine(Guid? medicineKey, string? medicineName, long userId)
             {
                 if (medicineKey.HasValue)
                 {
                     return await _unitOfWork.MedicineRepository.GetAsync(medicineKey.Value);
                 }
-                return new Medicine { Name = medicineName! };
+                return new Medicine { Name = medicineName!, UserId = userId };
             }
         }
     }

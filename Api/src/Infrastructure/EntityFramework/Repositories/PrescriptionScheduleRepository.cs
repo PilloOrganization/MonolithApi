@@ -20,8 +20,10 @@ namespace Infrastructure.EntityFramework.Repositories
 
         public async Task<IEnumerable<PrescriptionSchedule>> GetByCourseKeyAsync(Guid courseKey)
         {
-            Course course = await _context.Courses.Where(c => c.EntityKey == courseKey).Include(c => c.PrescriptionSchedules).SingleAsync();
-            return _context.PrescriptionSchedules;
+            return await _context.PrescriptionSchedules
+                                 .Where(e => e.Course.EntityKey == courseKey)
+                                 .Include(c => c.Medicine)
+                                 .Include(e => e.Doses).ToListAsync();
         }
 
         public void Create(PrescriptionSchedule prescriptionSchedule)

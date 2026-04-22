@@ -14,7 +14,7 @@ namespace Infrastructure.EntityFramework.SqlServer.Configurations
                 .HasMaxLength(100)
                 .IsRequired();
 
-            builder.HasOne<Account>()
+            builder.HasOne(c => c.Account)
                 .WithMany()
                 .HasForeignKey(c => c.AccountId)
                 .OnDelete(DeleteBehavior.Restrict);

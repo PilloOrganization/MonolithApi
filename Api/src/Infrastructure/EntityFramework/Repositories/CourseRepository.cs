@@ -18,6 +18,11 @@ namespace Infrastructure.EntityFramework.Repositories
             return await _context.Courses.Where(c => c.AccountId == accountId).ToListAsync();
         }
 
+        public async Task<long> GetIdAsync(Guid courseKey)
+        {
+            return await _context.Courses.Where(c => c.EntityKey == courseKey).Select(e => e.Id).SingleAsync();
+        }
+
         public async Task<Course> GetAsync(Guid courseKey)
         {
             return await _context.Courses
@@ -36,6 +41,13 @@ namespace Infrastructure.EntityFramework.Repositories
         public void Delete(Course course)
         {
             _context.Remove(course);
+        }
+
+        public async Task<IEnumerable<Course>> GetByAccountKeyAsync(Guid accountKey)
+        {
+            return await _context.Courses
+                                 .Where(c => c.Account.EntityKey == accountKey)
+                                 .ToListAsync();
         }
     }
 }

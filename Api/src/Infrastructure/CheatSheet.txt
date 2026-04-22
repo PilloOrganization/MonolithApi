@@ -1,7 +1,7 @@
-﻿dotnet ef migrations add Account_Add_IsDefaultColumn --project Infrastructure --startup-project Api
+﻿dotnet ef migrations add InitialMigration --project Infrastructure --startup-project Api
 dotnet ef migrations remove --project Infrastructure --startup-project Api
-dotnet ef database update --project Infrastructure --startup-project Api
-dotnet ef database update Account_Add_IsDefaultColumn --project Infrastructure --startup-project Api
+dotnet ef database update 0 --project Infrastructure --startup-project Api
+dotnet ef database update InitialMigration --project Infrastructure --startup-project Api
 
 DELETE FROM Medicines
 DELETE FROM Doses
@@ -9,3 +9,10 @@ DELETE FROM PrescriptionSchedules
 DELETE FROM Courses
 DELETE FROM Accounts
 DELETE FROM Users
+
+SELECT * FROM Medicines
+SELECT * FROM Doses
+SELECT * FROM PrescriptionSchedules
+SELECT * FROM Courses
+SELECT * FROM Accounts
+SELECT * FROM Users

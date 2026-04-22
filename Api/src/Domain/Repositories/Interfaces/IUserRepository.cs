@@ -4,9 +4,10 @@ namespace Domain.Repositories.Interfaces
 {
     public interface IUserRepository
     {
-        Task<User?> GetUserByEmailAsync(string email);
-        Task<User?> GetUserByPhoneAsync(string phone);
-        Task<User?> GetUserByUsernameAsync(string username);
+        Task<User?> GetByEmailAsync(string email);
+        Task<User?> GetByPhoneAsync(string phone);
+        Task<User?> GetByUsernameAsync(string username);
+        Task<long> GetIdByKeyAsync(Guid key);
         void Create(User user);
         //Task DeleteUserAsync(Guid key);
         //Task DeleteUserAsync(long id);

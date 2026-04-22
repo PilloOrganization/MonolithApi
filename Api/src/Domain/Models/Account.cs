@@ -3,10 +3,10 @@
     public class Account : Entity
     {
         public long UserId { get; set; }
-        public virtual User User { get; set; } = new User();
-        public string FirstName { get; set; } = string.Empty;
-        public string LastName { get; set; } = string.Empty;
-        public bool IsDefault { get; set; } = false;
+        public virtual User User { get; set; } = null!;
+        public string FirstName { get; set; } = null!;
+        public string LastName { get; set; } = null!;
+        public bool IsDefault { get; set; }
 
     }
 }

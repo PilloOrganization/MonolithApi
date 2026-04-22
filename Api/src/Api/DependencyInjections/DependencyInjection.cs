@@ -1,4 +1,6 @@
 ﻿using Api.AutomapperProfiles;
+using Api.Services;
+using Domain.Services.Interfaces;
 
 namespace Api.DependencyInjections
 {
@@ -8,6 +10,8 @@ namespace Api.DependencyInjections
         {
             AddAutomapper(services);
             services.AddAuthentication(configuration);
+            services.AddScoped<IUserContext, UserContext>();
+            services.AddHttpContextAccessor();
         }
 
         private static void AddAutomapper(IServiceCollection services)

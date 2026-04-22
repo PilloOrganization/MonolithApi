@@ -199,6 +199,9 @@ namespace Infrastructure.Migrations
                     b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("datetime2");
 
+                    b.Property<long>("UserId")
+                        .HasColumnType("bigint");
+
                     b.HasKey("Id");
 
                     b.HasIndex("EntityKey")
@@ -332,11 +335,13 @@ namespace Infrastructure.Migrations
 
             modelBuilder.Entity("Domain.Models.Course", b =>
                 {
-                    b.HasOne("Domain.Models.Account", null)
+                    b.HasOne("Domain.Models.Account", "Account")
                         .WithMany()
                         .HasForeignKey("AccountId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
+
+                    b.Navigation("Account");
                 });
 
             modelBuilder.Entity("Domain.Models.Dose", b =>

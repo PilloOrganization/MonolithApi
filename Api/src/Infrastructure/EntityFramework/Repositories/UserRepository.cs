@@ -14,17 +14,22 @@ namespace Infrastructure.EntityFramework.Repositories
             _context = context ?? throw new ArgumentNullException(nameof(context));
         }
 
-        public Task<User?> GetUserByEmailAsync(string email)
+        public Task<long> GetIdByKeyAsync(Guid key)
+        {
+            return _context.Users.Where(e => e.EntityKey == key).Select(e => e.Id).SingleAsync();
+        }
+
+        public Task<User?> GetByEmailAsync(string email)
         {
             return GetByProperty(u => u.Email == email);
         }
 
-        public Task<User?> GetUserByPhoneAsync(string phone)
+        public Task<User?> GetByPhoneAsync(string phone)
         {
             return GetByProperty(u => u.PhoneNumber == phone);
         }
 
-        public Task<User?> GetUserByUsernameAsync(string username)
+        public Task<User?> GetByUsernameAsync(string username)
         {
             return GetByProperty(u => u.Username == username);
         }

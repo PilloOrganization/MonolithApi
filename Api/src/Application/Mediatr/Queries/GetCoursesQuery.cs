@@ -1,23 +1,33 @@
-using Domain.Models;
+using Application.DataTransferObjects;
+using Application.UnitOfWorks.Interfaces;
+using AutoMapper;
 using MediatR;
 
 namespace Application.Mediatr.Queries
 {
-    public class GetCoursesQuery : IRequest<IEnumerable<Course>>
+    public class GetCoursesQuery : IRequest<IEnumerable<CourseDto>>
     {
-        public class Handler : IRequestHandler<GetCoursesQuery, IEnumerable<Course>>
-        {
-            // Inject your data source (e.g., DbContext, repository) here
+        public Guid AccountKey { get; init; }
 
-            public Handler()
+        public class Handler : IRequestHandler<GetCoursesQuery, IEnumerable<CourseDto>>
+        {
+            private readonly IUnitOfWork _unitOfWork;
+            private readonly IMapper _mapper;
+
+            public Handler(IUnitOfWork unitOfWork, IMapper mapper)
             {
-                // Assign dependencies here
+                _unitOfWork = unitOfWork;
+                _mapper = mapper;
             }
 
-            public async Task<IEnumerable<Course>> Handle(GetCoursesQuery request, CancellationToken cancellationToken)
+            public async Task<IEnumerable<CourseDto>> Handle(GetCoursesQuery request, CancellationToken cancellationToken)
             {
-                // TODO: Replace with actual data access logic
-                return await Task.FromResult(new List<Course>());
+                var courses = await _unitOfWork.CourseRepository.GetByAccountKeyAsync(request.AccountKey);
+                if (courses.Any())
+                {
+                    var prescriptionSchedules = await _unitOfWork.PrescriptionScheduleRepository.GetByCourseKeyAsync(courses.First().EntityKey);
+                }
+                return _mapper.Map<IEnumerable<CourseDto>>(courses);
             }
         }
     }

@@ -3,9 +3,9 @@
     public class PrescriptionSchedule : Entity
     {
         public long CourseId { get; set; }
-        public virtual Course Course { get; set; } = new Course();
+        public virtual Course Course { get; set; } = null!;
         public long MedicineId { get; set; }
-        public virtual Medicine Medicine { get; set; } = new Medicine();
-        public virtual List<Dose> Doses { get; set; } = new List<Dose>();
+        public virtual Medicine Medicine { get; set; } = null!;
+        public virtual List<Dose> Doses { get; set; } = new();
     }
 }

@@ -28,9 +28,9 @@ namespace Application.Mediatr.Commands
             public async Task<UserDto> Handle(LoginUserCommand request, CancellationToken cancellationToken)
             {
                 // TODO: understand in a runtime if the input is a username, phone number, or email and then query the database accordingly
-                User? user = await _unitOfWork.UserRepository.GetUserByUsernameAsync(request.UsernameOrPhoneOrEmail)
-                    ?? await _unitOfWork.UserRepository.GetUserByPhoneAsync(request.UsernameOrPhoneOrEmail)
-                    ?? await _unitOfWork.UserRepository.GetUserByEmailAsync(request.UsernameOrPhoneOrEmail);
+                User? user = await _unitOfWork.UserRepository.GetByUsernameAsync(request.UsernameOrPhoneOrEmail)
+                    ?? await _unitOfWork.UserRepository.GetByPhoneAsync(request.UsernameOrPhoneOrEmail)
+                    ?? await _unitOfWork.UserRepository.GetByEmailAsync(request.UsernameOrPhoneOrEmail);
                 if (user == null)
                 {
                     throw new Exception("User not found");

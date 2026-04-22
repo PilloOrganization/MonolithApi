@@ -1,4 +1,5 @@
 ﻿using Api.Models.Requests;
+using Application.DataTransferObjects;
 using Application.Mediatr.Commands;
 using Application.Mediatr.Queries;
 using AutoMapper;
@@ -23,7 +24,7 @@ namespace Api.Controllers
         [HttpGet("account/{accountKey}")]
         public async Task<ActionResult<object>> GetAllForAccount(Guid accountKey)
         {
-            var result = await _mediator.Send(new GetCoursesQuery());
+            IEnumerable<CourseDto> result = await _mediator.Send(new GetCoursesQuery { AccountKey = accountKey });
             return Ok(result);
         }
 

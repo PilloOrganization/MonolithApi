@@ -7,6 +7,7 @@ using Infrastructure.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 
 namespace Infrastructure.DependencyInjections
 {
@@ -15,7 +16,7 @@ namespace Infrastructure.DependencyInjections
         public static void AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
         {
             var connectionString = configuration.GetConnectionString("DefaultConnection");
-            services.AddDbContext<SqlServerAppDbContext>(options => options.UseSqlServer(connectionString));
+            services.AddDbContext<SqlServerAppDbContext>(options => options.UseSqlServer(connectionString).LogTo(Console.WriteLine, LogLevel.Information));
             AddRepositoriesAndUnitOfWork(services);
             services.AddScoped<IPasswordHasher, PasswordHasher>();
         }
