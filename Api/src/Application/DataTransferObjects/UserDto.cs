@@ -3,6 +3,6 @@
     public class UserDto : BaseDto
     {
         public string Username { get; set; } = string.Empty;
-        public AccountDto DefaultAccountDto { get; set; } = new AccountDto();
+        public AccountDto DefaultAccountDto { get; set; } = null!;
     }
 }

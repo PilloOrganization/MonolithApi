@@ -1,4 +1,6 @@
 ﻿using Application.AutomapperProfiles;
+using Application.Services;
+using Application.Services.Interfaces;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -13,6 +15,7 @@ namespace Application.DependencyInjections
                 cfg.RegisterServicesFromAssembly(typeof(DependencyInjection).Assembly);
             });
             AddAutomapper(services);
+            services.AddScoped<ICoursesService, CoursesService>();
         }
 
         private static void AddAutomapper(IServiceCollection services)

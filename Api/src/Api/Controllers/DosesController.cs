@@ -24,7 +24,7 @@ namespace Api.Controllers
         public async Task<ActionResult<object>> Take(TakeDoseRequest request)
         {
             var command = _mapper.Map<TakeDoseCommand>(request);
-            var result = await _mediator.Send(command);
+            Unit result = await _mediator.Send(command);
             return Ok();
         }
     }

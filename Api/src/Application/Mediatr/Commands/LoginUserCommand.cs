@@ -1,4 +1,5 @@
 ﻿using Application.DataTransferObjects;
+using Application.Services.Interfaces;
 using Application.UnitOfWorks.Interfaces;
 using AutoMapper;
 using Domain.Models;
@@ -17,12 +18,14 @@ namespace Application.Mediatr.Commands
             private readonly IUnitOfWork _unitOfWork;
             private readonly IPasswordHasher _passwordHasher;
             private readonly IMapper _mapper;
+            private readonly ICoursesService _coursesService;
 
-            public Handler(IUnitOfWork unitOfWork, IMapper mapper, IPasswordHasher passwordHasher)
+            public Handler(IUnitOfWork unitOfWork, IMapper mapper, IPasswordHasher passwordHasher, ICoursesService coursesService)
             {
                 _unitOfWork = unitOfWork;
                 _passwordHasher = passwordHasher;
                 _mapper = mapper;
+                _coursesService = coursesService;
             }
 
             public async Task<UserDto> Handle(LoginUserCommand request, CancellationToken cancellationToken)
@@ -40,16 +43,10 @@ namespace Application.Mediatr.Commands
                     throw new Exception("Invalid password");
                 }
                 var userDto = _mapper.Map<UserDto>(user);
-                Account defaultAccount = (await _unitOfWork.AccountRepository.GetByUserIdAsync(user.Id)).Single(a => a.IsDefault);
+                Account defaultAccount = user.Accounts.Single(a => a.IsDefault);
                 userDto.DefaultAccountDto = _mapper.Map<AccountDto>(defaultAccount);
-                IEnumerable<Course> courses = await _unitOfWork.CourseRepository.GetByAccountIdAsync(defaultAccount.Id);
-                userDto.DefaultAccountDto.Courses = _mapper.Map<IEnumerable<CourseDto>>(courses);
-                Course? firstActiveCourse = courses.FirstOrDefault(e => e.IsActive);
-                if (firstActiveCourse is not null)
-                {
-                    IEnumerable<PrescriptionSchedule> prescriptionSchedules = await _unitOfWork.PrescriptionScheduleRepository.GetByCourseIdAsync(firstActiveCourse.Id);
-                    userDto.DefaultAccountDto.Courses.First().PrescriptionSchedules = _mapper.Map<IEnumerable<PrescriptionScheduleDto>>(prescriptionSchedules);
-                }
+                IEnumerable<CourseDto> courseDtos = await _coursesService.GetByAccountId(defaultAccount.Id);
+                userDto.DefaultAccountDto.Courses = courseDtos;
                 return userDto;
             }
         }

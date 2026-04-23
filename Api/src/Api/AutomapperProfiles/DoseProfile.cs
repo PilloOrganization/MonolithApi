@@ -9,7 +9,6 @@ namespace Api.AutomapperProfiles
         public DoseProfile()
         {
             CreateMap<TakeDoseRequest, TakeDoseCommand>();
-            //CreateMap<UpdatePrescriptionScheduleRequest, UpdatePrescriptionScheduleCommand>();
         }
     }
 }

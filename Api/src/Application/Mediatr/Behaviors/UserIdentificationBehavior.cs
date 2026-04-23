@@ -20,7 +20,7 @@ namespace Application.Mediatr.Behaviors
             if (request is IUserScopedRequest scopedRequest)
             {
                 var userKey = _userContext.UserKey;
-                scopedRequest.UserId = await _unitOfWork.UserRepository.GetIdByKeyAsync(userKey);
+                scopedRequest.UserId = await _unitOfWork.UserRepository.GetIdAsync(userKey);
             }
             return await next();
         }

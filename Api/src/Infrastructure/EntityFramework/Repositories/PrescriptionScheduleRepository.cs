@@ -13,12 +13,15 @@ namespace Infrastructure.EntityFramework.Repositories
             _context = context;
         }
 
-        public async Task<IEnumerable<PrescriptionSchedule>> GetByCourseIdAsync(long courseId)
+        public async Task<List<PrescriptionSchedule>> GetByCourseIdAsync(long courseId)
         {
-            return await _context.PrescriptionSchedules.Where(e => e.CourseId == courseId).Include(e => e.Doses).Include(e => e.Medicine).ToListAsync();
+            return await _context.PrescriptionSchedules
+                                 .Where(e => e.CourseId == courseId)
+                                 .Include(e => e.Doses)
+                                 .Include(e => e.Medicine).ToListAsync();
         }
 
-        public async Task<IEnumerable<PrescriptionSchedule>> GetByCourseKeyAsync(Guid courseKey)
+        public async Task<List<PrescriptionSchedule>> GetByCourseKeyAsync(Guid courseKey)
         {
             return await _context.PrescriptionSchedules
                                  .Where(e => e.Course.EntityKey == courseKey)

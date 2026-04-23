@@ -1,25 +1,31 @@
+using Application.DataTransferObjects;
+using Application.UnitOfWorks.Interfaces;
+using AutoMapper;
 using Domain.Models;
 using MediatR;
 
 namespace Application.Mediatr.Queries
 {
-    public class GetCourseQuery : IRequest<Course>
+    public class GetCourseQuery : IRequest<CourseDto>
     {
         public Guid CourseKey { get; set; }
 
-        public class Handler : IRequestHandler<GetCourseQuery, Course>
+        public class Handler : IRequestHandler<GetCourseQuery, CourseDto>
         {
-            // Inject your data source (e.g., DbContext, repository) here
+            private readonly IUnitOfWork _unitOfWork;
+            private readonly IMapper _mapper;
 
-            public Handler()
+            public Handler(IUnitOfWork unitOfWork, IMapper mapper)
             {
-                // Assign dependencies here
+                _unitOfWork = unitOfWork;
+                _mapper = mapper;
             }
 
-            public async Task<Course> Handle(GetCourseQuery request, CancellationToken cancellationToken)
+            public async Task<CourseDto> Handle(GetCourseQuery request, CancellationToken cancellationToken)
             {
-                // TODO: Replace with actual data access logic
-                return await Task.FromResult<Course>(null!);
+                Course course = await _unitOfWork.CourseRepository.GetAsync(request.CourseKey);
+                var courseDto = _mapper.Map<CourseDto>(course);
+                return courseDto;
             }
         }
     }

@@ -14,7 +14,7 @@ namespace Infrastructure.EntityFramework.Repositories
             _context = context ?? throw new ArgumentNullException(nameof(context));
         }
 
-        public Task<long> GetIdByKeyAsync(Guid key)
+        public Task<long> GetIdAsync(Guid key)
         {
             return _context.Users.Where(e => e.EntityKey == key).Select(e => e.Id).SingleAsync();
         }

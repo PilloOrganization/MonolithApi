@@ -7,7 +7,7 @@ namespace Domain.Repositories.Interfaces
         Task<User?> GetByEmailAsync(string email);
         Task<User?> GetByPhoneAsync(string phone);
         Task<User?> GetByUsernameAsync(string username);
-        Task<long> GetIdByKeyAsync(Guid key);
+        Task<long> GetIdAsync(Guid key);
         void Create(User user);
         //Task DeleteUserAsync(Guid key);
         //Task DeleteUserAsync(long id);

@@ -6,5 +6,14 @@
         public long AccountId { get; set; }
         public virtual Account Account { get; set; } = null!;
         public List<PrescriptionSchedule> PrescriptionSchedules { get; set; } = new();
+
+        public override void Delete()
+        {
+            base.Delete();
+            foreach (var prescriptionSchedule in PrescriptionSchedules)
+            { 
+                prescriptionSchedule.Delete();
+            }
+        }
     }
 }

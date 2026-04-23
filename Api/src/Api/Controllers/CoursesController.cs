@@ -31,7 +31,7 @@ namespace Api.Controllers
         [HttpGet("{courseKey}")]
         public async Task<ActionResult<object>> Get(Guid courseKey)
         {
-            var result = await _mediator.Send(new GetCourseQuery { CourseKey = courseKey });
+            CourseDto result = await _mediator.Send(new GetCourseQuery { CourseKey = courseKey });
             return Ok(result);
         }
 
@@ -39,7 +39,7 @@ namespace Api.Controllers
         public async Task<ActionResult<object>> Post(CreateCourseRequest request)
         {
             var command = _mapper.Map<CreateCourseCommand>(request);
-            var result = await _mediator.Send(command);
+            Guid result = await _mediator.Send(command);
             return Ok(new { courseKey = result });
         }
 
