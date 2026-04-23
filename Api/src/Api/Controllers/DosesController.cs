@@ -1,5 +1,4 @@
 ﻿using Api.Models.Requests;
-using Application.DataTransferObjects;
 using Application.Mediatr.Commands;
 using AutoMapper;
 using MediatR;

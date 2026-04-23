@@ -6,7 +6,8 @@ namespace Domain.Repositories.Interfaces
     {
         Task<List<PrescriptionSchedule>> GetByCourseIdAsync(long courseId);
         Task<List<PrescriptionSchedule>> GetByCourseKeyAsync(Guid courseKey);
+        Task<PrescriptionSchedule> GetAsync(Guid courseKey);
         void Create(PrescriptionSchedule prescriptionSchedule);
-        Task DeleteAsync(Guid key);
+        void Delete(PrescriptionSchedule prescriptionSchedule);
     }
 }

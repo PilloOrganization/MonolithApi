@@ -1,22 +1,27 @@
+using Application.UnitOfWorks.Interfaces;
+using Domain.Models;
 using MediatR;
 
 namespace Application.Mediatr.Commands
 {
-    public class DeletePrescriptionScheduleCommand : IRequest<object>
+    public class DeletePrescriptionScheduleCommand : IRequest<Unit>
     {
         public Guid PrescriptionScheduleKey { get; set; }
 
-        public class Handler : IRequestHandler<DeletePrescriptionScheduleCommand, object>
+        public class Handler : IRequestHandler<DeletePrescriptionScheduleCommand, Unit>
         {
-            public Handler()
+            private readonly IUnitOfWork _unitOfWork;
+
+            public Handler(IUnitOfWork unitOfWork)
             {
-                // Inject dependencies here
+                _unitOfWork = unitOfWork;
             }
 
-            public async Task<object> Handle(DeletePrescriptionScheduleCommand request, CancellationToken cancellationToken)
+            public async Task<Unit> Handle(DeletePrescriptionScheduleCommand request, CancellationToken cancellationToken)
             {
-                // TODO: Implement delete logic
-                return await Task.FromResult(new { Success = true });
+                PrescriptionSchedule prescriptionSchedule = await _unitOfWork.PrescriptionScheduleRepository.GetAsync(request.PrescriptionScheduleKey);
+                _unitOfWork.PrescriptionScheduleRepository.Delete(prescriptionSchedule);
+                return Unit.Value;
             }
         }
     }

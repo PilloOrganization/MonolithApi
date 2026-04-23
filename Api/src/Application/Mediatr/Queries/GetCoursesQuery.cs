@@ -1,8 +1,5 @@
 using Application.DataTransferObjects;
 using Application.Services.Interfaces;
-using Application.UnitOfWorks.Interfaces;
-using AutoMapper;
-using Domain.Models;
 using MediatR;
 
 namespace Application.Mediatr.Queries
@@ -13,14 +10,10 @@ namespace Application.Mediatr.Queries
 
         public class Handler : IRequestHandler<GetCoursesQuery, IEnumerable<CourseDto>>
         {
-            private readonly IUnitOfWork _unitOfWork;
-            private readonly IMapper _mapper;
             private readonly ICoursesService _coursesService;
 
-            public Handler(IUnitOfWork unitOfWork, IMapper mapper, ICoursesService coursesService)
+            public Handler(ICoursesService coursesService)
             {
-                _unitOfWork = unitOfWork;
-                _mapper = mapper;
                 _coursesService = coursesService;
             }
 

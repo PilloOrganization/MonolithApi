@@ -11,7 +11,7 @@
         {
             base.Delete();
             foreach (var prescriptionSchedule in PrescriptionSchedules)
-            { 
+            {
                 prescriptionSchedule.Delete();
             }
         }

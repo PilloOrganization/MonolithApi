@@ -29,14 +29,22 @@ namespace Infrastructure.EntityFramework.Repositories
                                  .Include(e => e.Doses).ToListAsync();
         }
 
+        public async Task<PrescriptionSchedule> GetAsync(Guid key)
+        {
+            return await _context.PrescriptionSchedules
+                                 .Include(e => e.Medicine)
+                                 .Include(e => e.Doses)
+                                 .SingleAsync(e => e.EntityKey == key);
+        }
+
         public void Create(PrescriptionSchedule prescriptionSchedule)
         {
             _context.Add(prescriptionSchedule);
         }
 
-        public async Task DeleteAsync(Guid key)
+        public void Delete(PrescriptionSchedule prescriptionSchedule)
         {
-            await _context.PrescriptionSchedules.Where(e => e.EntityKey == key).ExecuteDeleteAsync();
+            prescriptionSchedule.Delete();
         }
     }
 }
