@@ -1,6 +1,6 @@
 ﻿using Api.AutomapperProfiles;
 using Api.Services;
-using Domain.Services.Interfaces;
+using Application.Services.Interfaces;
 
 namespace Api.DependencyInjections
 {

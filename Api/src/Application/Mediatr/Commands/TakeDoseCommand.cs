@@ -1,6 +1,5 @@
 ﻿using Application.Mediatr.Interfaces;
 using Application.UnitOfWorks.Interfaces;
-using AutoMapper;
 using MediatR;
 
 namespace Application.Mediatr.Commands
@@ -14,12 +13,10 @@ namespace Application.Mediatr.Commands
         public class Handler : IRequestHandler<TakeDoseCommand, Unit>
         {
             private readonly IUnitOfWork _unitOfWork;
-            private readonly IMapper _mapper;
 
-            public Handler(IUnitOfWork unitOfWork, IMapper mapper)
+            public Handler(IUnitOfWork unitOfWork)
             {
                 _unitOfWork = unitOfWork;
-                _mapper = mapper;
             }
 
             public async Task<Unit> Handle(TakeDoseCommand request, CancellationToken cancellationToken)

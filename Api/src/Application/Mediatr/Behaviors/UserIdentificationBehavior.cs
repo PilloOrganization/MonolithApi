@@ -1,6 +1,6 @@
 ﻿using Application.Mediatr.Interfaces;
+using Application.Services.Interfaces;
 using Application.UnitOfWorks.Interfaces;
-using Domain.Services.Interfaces;
 using MediatR;
 
 namespace Application.Mediatr.Behaviors

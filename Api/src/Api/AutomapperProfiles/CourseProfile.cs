@@ -9,7 +9,6 @@ namespace Api.AutomapperProfiles
         public CourseProfile()
         {
             CreateMap<CreateCourseRequest, CreateCourseCommand>();
-            //CreateMap<UpdateCourseRequest, UpdateCourseCommand>();
         }
     }
 }

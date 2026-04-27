@@ -9,7 +9,5 @@ namespace Domain.Repositories.Interfaces
         Task<User?> GetByUsernameAsync(string username);
         Task<long> GetIdAsync(Guid key);
         void Create(User user);
-        //Task DeleteUserAsync(Guid key);
-        //Task DeleteUserAsync(long id);
     }
 }

@@ -13,14 +13,23 @@ namespace Infrastructure.EntityFramework.Repositories
             _context = context;
         }
 
-        public async Task<IEnumerable<Account>> GetByUserIdAsync(long userId)
+        public async Task<IEnumerable<Account>> GetByUserKeyAsync(Guid userKey)
         {
-            return await _context.Accounts.Where(e => e.UserId == userId).ToListAsync();
+            return await _context.Accounts.Where(e => e.User.EntityKey == userKey).ToListAsync();
         }
 
-        public async Task<Account> GetByKeyAsync(Guid key)
+        public async Task<Account> GetAsync(Guid key)
         {
             return await _context.Accounts.SingleAsync(e => e.EntityKey == key);
+        }
+
+        public async Task<Account> GetWithRelatedAsync(Guid key)
+        {
+            return await _context.Accounts
+                .Include(a => a.Courses)
+                    .ThenInclude(e => e.PrescriptionSchedules)
+                        .ThenInclude(e => e.Doses)
+                .SingleAsync(e => e.EntityKey == key);
         }
 
         public void Create(Account account)
@@ -31,11 +40,6 @@ namespace Infrastructure.EntityFramework.Repositories
         public void Delete(Account account)
         {
             _context.Accounts.Remove(account);
-        }
-
-        public async Task DeleteAsync(Guid key)
-        {
-            await _context.Accounts.Where(e => e.EntityKey == key).ExecuteDeleteAsync();
         }
     }
 }

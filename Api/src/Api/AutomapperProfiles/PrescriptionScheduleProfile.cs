@@ -9,7 +9,6 @@ namespace Api.AutomapperProfiles
         public PrescriptionScheduleProfile()
         {
             CreateMap<CreatePrescriptionScheduleRequest, CreatePrescriptionScheduleCommand>();
-            //CreateMap<UpdatePrescriptionScheduleRequest, UpdatePrescriptionScheduleCommand>();
         }
     }
 }

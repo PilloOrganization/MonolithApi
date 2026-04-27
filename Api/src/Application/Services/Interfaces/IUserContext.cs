@@ -1,4 +1,4 @@
-﻿namespace Domain.Services.Interfaces
+﻿namespace Application.Services.Interfaces
 {
     public interface IUserContext
     {

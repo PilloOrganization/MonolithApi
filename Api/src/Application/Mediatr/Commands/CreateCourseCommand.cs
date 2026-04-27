@@ -12,18 +12,16 @@ namespace Application.Mediatr.Commands
 
         public class Handler : IRequestHandler<CreateCourseCommand, Guid>
         {
-            private readonly IMapper _mapper;
             private readonly IUnitOfWork _unitOfWork;
 
-            public Handler(IUnitOfWork unitOfWork, IMapper mapper)
+            public Handler(IUnitOfWork unitOfWork)
             {
                 _unitOfWork = unitOfWork;
-                _mapper = mapper;
             }
 
             public async Task<Guid> Handle(CreateCourseCommand request, CancellationToken cancellationToken)
             {
-                Account account = await _unitOfWork.AccountRepository.GetByKeyAsync(request.AccountKey);
+                Account account = await _unitOfWork.AccountRepository.GetAsync(request.AccountKey);
                 var course = new Course
                 {
                     Name = request.Name,

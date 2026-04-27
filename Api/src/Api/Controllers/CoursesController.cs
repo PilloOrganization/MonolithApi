@@ -43,15 +43,6 @@ namespace Api.Controllers
             return Ok(new { courseKey = result });
         }
 
-        //[HttpPut("{courseKey}")]
-        //public async Task<ActionResult<object>> Put(Guid courseKey, UpdateCourseRequest request)
-        //{
-        //    var command = _mapper.Map<UpdateCourseCommand>(request);
-        //    command.CourseKey = courseKey;
-        //    var result = await _mediator.Send(command);
-        //    return Ok(result);
-        //}
-
         [HttpDelete("{courseKey}")]
         public async Task<ActionResult<object>> Delete(Guid courseKey)
         {

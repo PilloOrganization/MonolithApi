@@ -20,16 +20,16 @@ namespace Application.Services
         public async Task<IEnumerable<CourseDto>> GetByAccountKey(Guid accountKey)
         {
             List<Course> courses = await _unitOfWork.CourseRepository.GetByAccountKeyAsync(accountKey);
-            return await ProcessAndMapCourses(courses);
+            return await LoadFirstActiveCourseAndMapRest(courses);
         }
 
         public async Task<IEnumerable<CourseDto>> GetByAccountId(long accountId)
         {
             List<Course> courses = await _unitOfWork.CourseRepository.GetByAccountIdAsync(accountId);
-            return await ProcessAndMapCourses(courses);
+            return await LoadFirstActiveCourseAndMapRest(courses);
         }
 
-        private async Task<IEnumerable<CourseDto>> ProcessAndMapCourses(List<Course> courses)
+        private async Task<IEnumerable<CourseDto>> LoadFirstActiveCourseAndMapRest(List<Course> courses)
         {
             if (courses.Any(e => e.IsActive))
             {

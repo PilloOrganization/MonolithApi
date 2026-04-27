@@ -15,7 +15,7 @@ namespace Infrastructure.DependencyInjections
     {
         public static void AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
         {
-            var connectionString = configuration.GetConnectionString("DefaultConnection");
+            string? connectionString = configuration.GetConnectionString("DefaultConnection");
             services.AddDbContext<SqlServerAppDbContext>(options => options.UseSqlServer(connectionString).LogTo(Console.WriteLine, LogLevel.Information));
             AddRepositoriesAndUnitOfWork(services);
             services.AddScoped<IPasswordHasher, PasswordHasher>();

@@ -21,6 +21,7 @@ namespace Application.Mediatr.Commands
             {
                 PrescriptionSchedule prescriptionSchedule = await _unitOfWork.PrescriptionScheduleRepository.GetAsync(request.PrescriptionScheduleKey);
                 _unitOfWork.PrescriptionScheduleRepository.Delete(prescriptionSchedule);
+                await _unitOfWork.SaveChangesAsync(cancellationToken);
                 return Unit.Value;
             }
         }

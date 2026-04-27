@@ -28,15 +28,6 @@ namespace Api.Controllers
             return Ok(result);
         }
 
-        //[HttpPut("{PrescriptionScheduleKey}")]
-        //public async Task<ActionResult<object>> Put(Guid PrescriptionScheduleKey, CreatePrescriptionScheduleRequest request)
-        //{
-        //    var command = _mapper.Map<UpdatePrescriptionScheduleCommand>(request);
-        //    command.PrescriptionScheduleKey = PrescriptionScheduleKey;
-        //    var result = await _mediator.Send(command);
-        //    return Ok(result);
-        //}
-
         [HttpDelete("{PrescriptionScheduleKey}")]
         public async Task<ActionResult<object>> Delete(Guid prescriptionScheduleKey)
         {

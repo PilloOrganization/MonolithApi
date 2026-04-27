@@ -2,7 +2,7 @@
 {
     public class UserDto : BaseDto
     {
-        public string Username { get; set; } = string.Empty;
+        public string Username { get; set; } = null!;
         public AccountDto DefaultAccountDto { get; set; } = null!;
     }
 }

@@ -43,15 +43,5 @@ namespace Infrastructure.EntityFramework.Repositories
         {
             _context.Users.Add(user);
         }
-
-        //public Task DeleteUserAsync(Guid key)
-        //{
-        //    throw new NotImplementedException();
-        //}
-
-        //public Task DeleteUserAsync(long id)
-        //{
-        //    throw new NotImplementedException();
-        //}
     }
 }
