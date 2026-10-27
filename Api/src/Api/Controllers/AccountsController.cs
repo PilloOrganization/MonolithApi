@@ -5,6 +5,7 @@ using Application.Mediatr.Queries;
 using AutoMapper;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace Api.Controllers
 {
@@ -21,9 +22,16 @@ namespace Api.Controllers
             _mapper = mapper;
         }
 
-        [HttpGet("user/{userKey}")]
-        public async Task<ActionResult<object>> GetAllForAccount(Guid userKey)
+        [HttpGet]
+        public async Task<ActionResult<object>> Get()
         {
+            var claimValue = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+            if (string.IsNullOrEmpty(claimValue) || !Guid.TryParse(claimValue, out Guid userKey))
+            {
+                return Unauthorized();
+            }
+
             IEnumerable<AccountDto> result = await _mediator.Send(new GetAccountsQuery { UserKey = userKey });
             return Ok(result);
         }

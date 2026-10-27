@@ -17,15 +17,13 @@ namespace Infrastructure.EntityFramework.SqlServer.Configurations
                 .IsUnique();
 
             builder.Property(u => u.Email)
-                .HasMaxLength(70)
-                .IsRequired();
+                .HasMaxLength(70);
 
             builder.HasIndex(u => u.Email)
                 .IsUnique();
 
             builder.Property(u => u.PhoneNumber)
-                .HasMaxLength(20)
-                .IsRequired();
+                .HasMaxLength(20);
 
             builder.HasIndex(u => u.PhoneNumber)
                 .IsUnique();

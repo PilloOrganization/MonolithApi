@@ -22,7 +22,7 @@ namespace Api.Controllers
         }
 
         [HttpGet("account/{accountKey}")]
-        public async Task<ActionResult<object>> GetAllForAccount(Guid accountKey)
+        public async Task<ActionResult<object>> GetForAccount(Guid accountKey)
         {
             IEnumerable<CourseDto> result = await _mediator.Send(new GetCoursesQuery { AccountKey = accountKey });
             return Ok(result);

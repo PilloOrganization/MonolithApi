@@ -15,7 +15,7 @@ namespace Infrastructure.EntityFramework.SqlServer.Configurations
                 .IsRequired();
 
             builder.HasOne(c => c.Account)
-                .WithMany()
+                .WithMany(c => c.Courses)
                 .HasForeignKey(c => c.AccountId)
                 .OnDelete(DeleteBehavior.Restrict);
         }
