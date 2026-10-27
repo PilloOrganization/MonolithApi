@@ -27,7 +27,7 @@ namespace Api.Controllers
         {
             var command = _mapper.Map<RegisterUserCommand>(request);
             var result = await _mediator.Send(command);
-            return Created();
+            return Ok();
         }
 
         [HttpPost(nameof(Login))]

@@ -278,7 +278,6 @@ namespace Infrastructure.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Email")
-                        .IsRequired()
                         .HasMaxLength(70)
                         .HasColumnType("nvarchar(70)");
 
@@ -301,7 +300,6 @@ namespace Infrastructure.Migrations
                         .HasColumnType("nvarchar(200)");
 
                     b.Property<string>("PhoneNumber")
-                        .IsRequired()
                         .HasMaxLength(20)
                         .HasColumnType("nvarchar(20)");
 
@@ -316,7 +314,8 @@ namespace Infrastructure.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("Email")
-                        .IsUnique();
+                        .IsUnique()
+                        .HasFilter("[Email] IS NOT NULL");
 
                     b.HasIndex("EntityKey")
                         .IsUnique();
@@ -324,7 +323,8 @@ namespace Infrastructure.Migrations
                     SqlServerIndexBuilderExtensions.IncludeProperties(b.HasIndex("EntityKey"), new[] { "IsDeleted" });
 
                     b.HasIndex("PhoneNumber")
-                        .IsUnique();
+                        .IsUnique()
+                        .HasFilter("[PhoneNumber] IS NOT NULL");
 
                     b.HasIndex("Username")
                         .IsUnique();
@@ -346,7 +346,7 @@ namespace Infrastructure.Migrations
             modelBuilder.Entity("Domain.Models.Course", b =>
                 {
                     b.HasOne("Domain.Models.Account", "Account")
-                        .WithMany()
+                        .WithMany("Courses")
                         .HasForeignKey("AccountId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
@@ -382,6 +382,11 @@ namespace Infrastructure.Migrations
                     b.Navigation("Course");
 
                     b.Navigation("Medicine");
+                });
+
+            modelBuilder.Entity("Domain.Models.Account", b =>
+                {
+                    b.Navigation("Courses");
                 });
 
             modelBuilder.Entity("Domain.Models.Course", b =>

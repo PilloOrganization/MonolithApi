@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore.Migrations;
+﻿using System;
+using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
@@ -36,8 +37,8 @@ namespace Infrastructure.Migrations
                     Id = table.Column<long>(type: "bigint", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Username = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
-                    Email = table.Column<string>(type: "nvarchar(70)", maxLength: 70, nullable: false),
-                    PhoneNumber = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
+                    Email = table.Column<string>(type: "nvarchar(70)", maxLength: 70, nullable: true),
+                    PhoneNumber = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: true),
                     Password = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
                     EntityKey = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
@@ -229,7 +230,8 @@ namespace Infrastructure.Migrations
                 name: "IX_Users_Email",
                 table: "Users",
                 column: "Email",
-                unique: true);
+                unique: true,
+                filter: "[Email] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Users_EntityKey",
@@ -242,7 +244,8 @@ namespace Infrastructure.Migrations
                 name: "IX_Users_PhoneNumber",
                 table: "Users",
                 column: "PhoneNumber",
-                unique: true);
+                unique: true,
+                filter: "[PhoneNumber] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Users_Username",
