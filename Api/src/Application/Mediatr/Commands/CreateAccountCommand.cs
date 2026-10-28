@@ -8,7 +8,6 @@ namespace Application.Mediatr.Commands
 {
     public class CreateAccountCommand : IRequest<Guid>, IUserScopedRequest
     {
-        public Guid AccountKey { get; set; }
         public string FirstName { get; set; } = null!;
         public string LastName { get; set; } = null!;
         public long UserId { get; set; }

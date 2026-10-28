@@ -13,6 +13,11 @@ namespace Infrastructure.EntityFramework.Repositories
             _context = context;
         }
 
+        public async Task<IEnumerable<Medicine>> GetByUserIdAsync(long userId)
+        {
+            return await _context.Medicines.Where(e => e.UserId == userId).ToListAsync();
+        }
+
         public async Task<Medicine> GetAsync(Guid key)
         {
             return await _context.Medicines.SingleAsync(e => e.EntityKey == key);

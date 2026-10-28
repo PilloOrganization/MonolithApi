@@ -44,6 +44,15 @@ namespace Api.Controllers
             return Ok(new { AccountKey = result });
         }
 
+        [HttpPut("{accountKey}")]
+        public async Task<ActionResult<object>> Put(Guid accountKey, EditAccountRequest request)
+        {
+            var command = _mapper.Map<EditAccountCommand>(request);
+            command.AccountKey = accountKey;
+            await _mediator.Send(command);
+            return NoContent();
+        }
+
         [HttpDelete("{AccountKey}")]
         public async Task<ActionResult<object>> Delete(Guid accountKey)
         {
