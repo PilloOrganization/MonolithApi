@@ -1,6 +1,8 @@
 ﻿using Application.AutomapperProfiles;
+using Application.Mediatr.Behaviors;
 using Application.Services;
 using Application.Services.Interfaces;
+using MediatR;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -13,7 +15,9 @@ namespace Application.DependencyInjections
             services.AddMediatR(cfg =>
             {
                 cfg.RegisterServicesFromAssembly(typeof(DependencyInjection).Assembly);
+                cfg.AddOpenBehavior(typeof(UserIdentificationBehavior<,>));
             });
+
             AddAutomapper(services);
             services.AddScoped<ICoursesService, CoursesService>();
         }

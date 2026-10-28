@@ -1,0 +1,10 @@
+**/bin/
+**/obj/
+.git/
+.gitignore
+.vs/
+**/.user
+**/*.user
+**/*.suo
+**/*.cache
+**/*.log
