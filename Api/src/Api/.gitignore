@@ -1,0 +1,3 @@
+# Local development certificates - NEVER commit these!
+certs/*
+!certs/.gitkeep

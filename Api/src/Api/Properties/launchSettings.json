@@ -9,8 +9,8 @@
       "applicationUrl": "https://0.0.0.0:7000",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development",
-        "ASPNETCORE_Kestrel__Certificates__Default__Path": "C:\\Users\\User\\pillo-certs\\pillo-api.pem",
-        "ASPNETCORE_Kestrel__Certificates__Default__KeyPath": "C:\\Users\\User\\pillo-certs\\pillo-api-key.pem"
+        "ASPNETCORE_Kestrel__Certificates__Default__Path": "certs/pillo-api.pem",
+        "ASPNETCORE_Kestrel__Certificates__Default__KeyPath": "certs/pillo-api-key.pem"
       }
     }
   }

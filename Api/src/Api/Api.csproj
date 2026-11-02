@@ -17,7 +17,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Models\Responses\" />
+    <Folder Include="certs\" />
   </ItemGroup>
 
   <ItemGroup>
