@@ -1,17 +1,60 @@
-trigger: none
+trigger:
+  branches:
+    include:
+      - main
+  paths:
+    include:
+      - Api/src/**
+      - Api/buildAndDeploy/**
 
-resources:
-  pipelines:
-    - pipeline: apiCi
-      source: Api-CI
-      trigger:
-        branches:
-          include:
-            - main
+variables:
+  buildConfiguration: Release
+  apiProject: Api/src/Api/Api.csproj
 
 stages:
+  - stage: Build
+    displayName: Build and publish API
+    jobs:
+      - job: BuildApi
+        displayName: Build API
+        pool:
+          vmImage: ubuntu-latest
+        steps:
+          - task: UseDotNet@2
+            displayName: Install .NET 8 SDK
+            inputs:
+              packageType: sdk
+              version: 8.x
+
+          - script: dotnet restore "$(apiProject)"
+            displayName: Restore API dependencies
+
+          - script: dotnet build "$(apiProject)" --configuration "$(buildConfiguration)" --no-restore
+            displayName: Build API
+
+          - script: dotnet publish "$(apiProject)" --configuration "$(buildConfiguration)" --no-build --no-restore --output "$(Build.ArtifactStagingDirectory)/publish"
+            displayName: Publish API
+
+          - task: ArchiveFiles@2
+            displayName: Package API for App Service
+            inputs:
+              rootFolderOrFile: $(Build.ArtifactStagingDirectory)/publish
+              includeRootFolder: false
+              archiveType: zip
+              archiveFile: $(Build.ArtifactStagingDirectory)/api.zip
+              replaceExistingArchive: true
+
+          - task: PublishPipelineArtifact@1
+            displayName: Publish API artifact
+            inputs:
+              targetPath: $(Build.ArtifactStagingDirectory)/api.zip
+              artifact: api
+              publishLocation: pipeline
+
   - stage: Deploy_DEV
     displayName: Deploy to DEV
+    condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/main'))
+    dependsOn: Build
     jobs:
       - deployment: DeployApi_DEV
         displayName: Deploy API to DEV
@@ -24,7 +67,7 @@ stages:
           runOnce:
             deploy:
               steps:
-                - download: apiCi
+                - download: current
                   artifact: api
                 - task: AzureWebApp@1
                   displayName: Deploy API to DEV App Service
@@ -32,7 +75,7 @@ stages:
                     azureSubscription: $(azureServiceConnection)
                     appType: $(appType)
                     appName: $(webAppName)
-                    package: $(Pipeline.Workspace)/apiCi/api/api.zip
+                    package: $(Pipeline.Workspace)/api/api.zip
                     appSettings: |
                       -ConnectionStrings__DefaultConnection "$(ConnectionString)"
                       -Jwt__Key "$(JwtKey)"
@@ -55,7 +98,7 @@ stages:
           runOnce:
             deploy:
               steps:
-                - download: apiCi
+                - download: current
                   artifact: api
                 - task: AzureWebApp@1
                   displayName: Deploy API to QA App Service
@@ -63,7 +106,7 @@ stages:
                     azureSubscription: $(azureServiceConnection)
                     appType: $(appType)
                     appName: $(webAppName)
-                    package: $(Pipeline.Workspace)/apiCi/api/api.zip
+                    package: $(Pipeline.Workspace)/api/api.zip
                     appSettings: |
                       -ConnectionStrings__DefaultConnection "$(ConnectionString)"
                       -Jwt__Key "$(JwtKey)"
@@ -86,7 +129,7 @@ stages:
           runOnce:
             deploy:
               steps:
-                - download: apiCi
+                - download: current
                   artifact: api
                 - task: AzureWebApp@1
                   displayName: Deploy API to PROD App Service
@@ -94,7 +137,7 @@ stages:
                     azureSubscription: $(azureServiceConnection)
                     appType: $(appType)
                     appName: $(webAppName)
-                    package: $(Pipeline.Workspace)/apiCi/api/api.zip
+                    package: $(Pipeline.Workspace)/api/api.zip
                     appSettings: |
                       -ConnectionStrings__DefaultConnection "$(ConnectionString)"
                       -Jwt__Key "$(JwtKey)"
