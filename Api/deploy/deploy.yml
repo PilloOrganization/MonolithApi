@@ -1,0 +1,102 @@
+trigger: none
+
+resources:
+  pipelines:
+    - pipeline: apiCi
+      source: Api-CI
+      trigger:
+        branches:
+          include:
+            - main
+
+stages:
+  - stage: Deploy_DEV
+    displayName: Deploy to DEV
+    jobs:
+      - deployment: DeployApi_DEV
+        displayName: Deploy API to DEV
+        environment: DEV
+        pool:
+          vmImage: ubuntu-latest
+        variables:
+          - group: Api-DEV
+        strategy:
+          runOnce:
+            deploy:
+              steps:
+                - download: apiCi
+                  artifact: api
+                - task: AzureWebApp@1
+                  displayName: Deploy API to DEV App Service
+                  inputs:
+                    azureSubscription: $(azureServiceConnection)
+                    appType: $(appType)
+                    appName: $(webAppName)
+                    package: $(Pipeline.Workspace)/apiCi/api/api.zip
+                    appSettings: |
+                      -ConnectionStrings__DefaultConnection "$(ConnectionString)"
+                      -Jwt__Key "$(JwtKey)"
+                      -Jwt__Issuer "$(JwtIssuer)"
+                      -Jwt__Audience "$(JwtAudience)"
+
+  - stage: Deploy_QA
+    displayName: Deploy to QA
+    dependsOn: Deploy_DEV
+    condition: succeeded()
+    jobs:
+      - deployment: DeployApi_QA
+        displayName: Deploy API to QA
+        environment: QA
+        pool:
+          vmImage: ubuntu-latest
+        variables:
+          - group: Api-QA
+        strategy:
+          runOnce:
+            deploy:
+              steps:
+                - download: apiCi
+                  artifact: api
+                - task: AzureWebApp@1
+                  displayName: Deploy API to QA App Service
+                  inputs:
+                    azureSubscription: $(azureServiceConnection)
+                    appType: $(appType)
+                    appName: $(webAppName)
+                    package: $(Pipeline.Workspace)/apiCi/api/api.zip
+                    appSettings: |
+                      -ConnectionStrings__DefaultConnection "$(ConnectionString)"
+                      -Jwt__Key "$(JwtKey)"
+                      -Jwt__Issuer "$(JwtIssuer)"
+                      -Jwt__Audience "$(JwtAudience)"
+
+  - stage: Deploy_PROD
+    displayName: Deploy to PROD
+    dependsOn: Deploy_QA
+    condition: succeeded()
+    jobs:
+      - deployment: DeployApi_PROD
+        displayName: Deploy API to PROD
+        environment: PROD
+        pool:
+          vmImage: ubuntu-latest
+        variables:
+          - group: Api-PROD
+        strategy:
+          runOnce:
+            deploy:
+              steps:
+                - download: apiCi
+                  artifact: api
+                - task: AzureWebApp@1
+                  displayName: Deploy API to PROD App Service
+                  inputs:
+                    azureSubscription: $(azureServiceConnection)
+                    appType: $(appType)
+                    appName: $(webAppName)
+                    package: $(Pipeline.Workspace)/apiCi/api/api.zip
+                    appSettings: |
+                      -ConnectionStrings__DefaultConnection "$(ConnectionString)"
+                      -Jwt__Key "$(JwtKey)"
+                      -Jwt__Issuer "$(JwtIssuer)"
+                      -Jwt__Audience "$(JwtAudience)"
